@@ -29,6 +29,7 @@ export const PATCH = protectedHandler(
   },
   {
     roleCheck: canManageMessages,
+    audit: { action: "UPDATE_SUBMISSION", resource: "contact" },
   }
 );
 
@@ -52,5 +53,6 @@ export const DELETE = protectedHandler(
   },
   {
     roleCheck: canManageMessages,
+    audit: { action: "DELETE_SUBMISSION", resource: "contact" },
   }
 );
