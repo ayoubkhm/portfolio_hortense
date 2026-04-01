@@ -2,19 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendContactNotification } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { VALID_SERVICES } from "@/lib/categories";
+import { RATE_LIMITS } from "@/lib/rate-limits-config";
+import { getClientIp } from "@/lib/request-utils";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const VALID_SERVICES = ["Mariage", "Drone", "Autre"] as const;
-const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(request);
 
-    const allowed = await checkRateLimit(`contact:${ip}`, 5, FIFTEEN_MINUTES);
+    const allowed = await checkRateLimit(`contact:${ip}`, RATE_LIMITS.CONTACT_FORM.max, RATE_LIMITS.CONTACT_FORM.windowMs);
     if (!allowed) {
       return NextResponse.json(
         { error: "Trop de soumissions. Réessayez dans quelques minutes." },

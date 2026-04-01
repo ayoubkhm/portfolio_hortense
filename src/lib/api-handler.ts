@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api-auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logAudit } from "@/lib/audit";
+import { getClientIp } from "@/lib/request-utils";
 
 interface HandlerOptions {
   // Role check function (e.g., canEditContent). If undefined, any authenticated user can access.
@@ -49,7 +50,7 @@ export function protectedHandler(handler: HandlerFn, options: HandlerOptions = {
 
       // Audit log (fire-and-forget, only on success)
       if (options.audit && response.status >= 200 && response.status < 300) {
-        const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+        const ip = getClientIp(request);
         logAudit({
           adminId: admin!.id,
           adminEmail: admin!.email,

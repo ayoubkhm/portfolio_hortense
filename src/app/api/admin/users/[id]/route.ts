@@ -6,6 +6,9 @@ import { canManageUsers } from "@/lib/roles";
 import { validatePassword } from "@/lib/password-validation";
 import { logAudit } from "@/lib/audit";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { ROLES_LIST } from "@/lib/roles";
+import { RATE_LIMITS } from "@/lib/rate-limits-config";
+import { getClientIp } from "@/lib/request-utils";
 
 export async function PATCH(
   request: NextRequest,
@@ -17,7 +20,7 @@ export async function PATCH(
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
 
-  const allowed = await checkRateLimit(`update-user:${admin!.id}`, 20, 60 * 60 * 1000);
+  const allowed = await checkRateLimit(`update-user:${admin!.id}`, RATE_LIMITS.UPDATE_USER.max, RATE_LIMITS.UPDATE_USER.windowMs);
   if (!allowed) {
     return NextResponse.json(
       { error: "Trop de modifications d'utilisateurs. Réessayez plus tard." },
@@ -37,8 +40,7 @@ export async function PATCH(
   const updateData: Record<string, unknown> = {};
   if (name !== undefined) updateData.name = name;
   if (role !== undefined) {
-    const validRoles = ["lecteur", "createur", "proprietaire"];
-    if (!validRoles.includes(role)) {
+    if (!ROLES_LIST.includes(role)) {
       return NextResponse.json({ error: "Rôle invalide." }, { status: 400 });
     }
     // Cannot demote another proprietaire
@@ -62,7 +64,7 @@ export async function PATCH(
     select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
 
-  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const ip = getClientIp(request);
   logAudit({
     adminId: admin!.id,
     adminEmail: admin!.email,
@@ -85,7 +87,7 @@ export async function DELETE(
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
 
-  const allowed = await checkRateLimit(`delete-user:${admin!.id}`, 5, 60 * 60 * 1000);
+  const allowed = await checkRateLimit(`delete-user:${admin!.id}`, RATE_LIMITS.DELETE_USER.max, RATE_LIMITS.DELETE_USER.windowMs);
   if (!allowed) {
     return NextResponse.json(
       { error: "Trop de suppressions d'utilisateurs. Réessayez plus tard." },
@@ -107,7 +109,7 @@ export async function DELETE(
 
   await prisma.admin.delete({ where: { id } });
 
-  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const ip = getClientIp(request);
   logAudit({
     adminId: admin!.id,
     adminEmail: admin!.email,

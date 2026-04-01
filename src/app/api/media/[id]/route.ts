@@ -4,6 +4,7 @@ import { deleteFile } from "@/lib/upload";
 import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
 import { logAudit } from "@/lib/audit";
+import { getClientIp } from "@/lib/request-utils";
 
 export async function DELETE(
   request: NextRequest,
@@ -30,7 +31,7 @@ export async function DELETE(
 
     await prisma.media.delete({ where: { id } });
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = getClientIp(request);
     logAudit({
       adminId: admin!.id,
       adminEmail: admin!.email,
@@ -126,7 +127,7 @@ export async function PATCH(
       data: updateData,
     });
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = getClientIp(request);
     logAudit({
       adminId: admin!.id,
       adminEmail: admin!.email,

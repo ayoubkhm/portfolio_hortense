@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdmin, createSession, setSessionCookie } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import { checkRateLimit } from "@/lib/rate-limit";
-
-const FIFTEEN_MINUTES = 15 * 60 * 1000;
+import { RATE_LIMITS } from "@/lib/rate-limits-config";
+import { getClientIp } from "@/lib/request-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limit by email: max 5 attempts per 15 minutes
-    const allowed = await checkRateLimit(`login:${email}`, 5, FIFTEEN_MINUTES);
+    const allowed = await checkRateLimit(`login:${email}`, RATE_LIMITS.LOGIN.max, RATE_LIMITS.LOGIN.windowMs);
     if (!allowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+    const ip = getClientIp(request);
     logAudit({
       adminId,
       adminEmail: email,

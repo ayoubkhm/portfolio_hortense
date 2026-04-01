@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { AdminUser } from "@/types";
-
-interface ThemeColors {
-  cream: string;
-  sand: string;
-  charcoal: string;
-  warmgray: string;
-  sage: string;
-  gold: string;
-}
+import type { AdminUser, ThemeColors } from "@/types";
 
 const ROLE_OPTIONS = [
   { value: "lecteur", label: "Lecteur", desc: "Consultation uniquement" },

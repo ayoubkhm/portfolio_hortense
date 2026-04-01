@@ -6,6 +6,9 @@ import { canManageUsers } from "@/lib/roles";
 import { validatePassword } from "@/lib/password-validation";
 import { logAudit } from "@/lib/audit";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { ROLES_LIST } from "@/lib/roles";
+import { RATE_LIMITS } from "@/lib/rate-limits-config";
+import { getClientIp } from "@/lib/request-utils";
 
 export async function GET(request: NextRequest) {
   const { error: authError, admin } = await requireAuth(request);
@@ -29,7 +32,7 @@ export async function POST(request: NextRequest) {
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
 
-  const allowed = await checkRateLimit(`create-user:${admin!.id}`, 10, 60 * 60 * 1000);
+  const allowed = await checkRateLimit(`create-user:${admin!.id}`, RATE_LIMITS.CREATE_USER.max, RATE_LIMITS.CREATE_USER.windowMs);
   if (!allowed) {
     return NextResponse.json(
       { error: "Trop de créations d'utilisateurs. Réessayez plus tard." },
@@ -54,8 +57,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { role } = await request.clone().json().catch(() => ({}));
-  const validRoles = ["lecteur", "createur", "proprietaire"];
-  const adminRole = validRoles.includes(role) ? role : "lecteur";
+  const adminRole = ROLES_LIST.includes(role) ? role : "lecteur";
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const created = await prisma.admin.create({
@@ -63,7 +65,7 @@ export async function POST(request: NextRequest) {
     select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
 
-  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const ip = getClientIp(request);
   logAudit({
     adminId: admin!.id,
     adminEmail: admin!.email,

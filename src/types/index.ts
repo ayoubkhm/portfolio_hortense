@@ -1,3 +1,14 @@
+export type { HomepageContent, MariageContent, DroneContent, ContactContent } from "@/lib/content";
+
+export interface ThemeColors {
+  cream: string;
+  sand: string;
+  charcoal: string;
+  warmgray: string;
+  sage: string;
+  gold: string;
+}
+
 export interface Media {
   id: string;
   filename: string;

@@ -4,6 +4,7 @@ import { validateFile, saveFile } from "@/lib/upload";
 import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
 import { logAudit } from "@/lib/audit";
+import { getClientIp } from "@/lib/request-utils";
 import { readdir, stat } from "fs/promises";
 import path from "path";
 
@@ -157,7 +158,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = getClientIp(request);
     logAudit({
       adminId: admin!.id,
       adminEmail: admin!.email,
