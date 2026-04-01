@@ -4,6 +4,27 @@ import { validateFile, saveFile } from "@/lib/upload";
 import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
 import { logAudit } from "@/lib/audit";
+import { readdir, stat } from "fs/promises";
+import path from "path";
+
+const MAX_MEDIA_COUNT = 500;
+const MAX_STORAGE = 5 * 1024 * 1024 * 1024; // 5GB
+
+async function getUploadsDirSize(): Promise<number> {
+  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  try {
+    const files = await readdir(uploadsDir, { recursive: true });
+    let total = 0;
+    for (const file of files) {
+      const filePath = path.join(uploadsDir, file.toString());
+      const stats = await stat(filePath);
+      if (stats.isFile()) total += stats.size;
+    }
+    return total;
+  } catch {
+    return 0;
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -94,6 +115,24 @@ export async function POST(request: NextRequest) {
     if (validationError) {
       return NextResponse.json(
         { error: validationError },
+        { status: 400 }
+      );
+    }
+
+    // Check media count quota
+    const mediaCount = await prisma.media.count();
+    if (mediaCount >= MAX_MEDIA_COUNT) {
+      return NextResponse.json(
+        { error: "Quota atteint. Supprimez des médias avant d'en ajouter." },
+        { status: 400 }
+      );
+    }
+
+    // Check storage quota
+    const currentSize = await getUploadsDirSize();
+    if (currentSize + file.size > MAX_STORAGE) {
+      return NextResponse.json(
+        { error: `Espace de stockage insuffisant. Utilisé : ${(currentSize / 1024 / 1024).toFixed(0)} MB / ${MAX_STORAGE / 1024 / 1024} MB.` },
         { status: 400 }
       );
     }

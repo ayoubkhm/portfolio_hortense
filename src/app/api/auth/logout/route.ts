@@ -1,8 +1,23 @@
 import { NextResponse } from "next/server";
-import { deleteSession } from "@/lib/auth";
+import { getSessionAdmin, deleteSession } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
+import { cookies } from "next/headers";
 
 export async function POST() {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_session")?.value;
+    if (token) {
+      const admin = await getSessionAdmin(token);
+      if (admin) {
+        logAudit({
+          adminId: admin.id,
+          adminEmail: admin.email,
+          action: "LOGOUT",
+          resource: "auth",
+        });
+      }
+    }
     await deleteSession();
 
     const response = NextResponse.json(

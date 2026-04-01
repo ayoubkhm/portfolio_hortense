@@ -88,7 +88,7 @@ export async function createPasswordResetToken(email: string): Promise<string | 
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
 
   await prisma.passwordReset.create({
-    data: { email, token, expiresAt },
+    data: { email, token: hashToken(token), expiresAt },
   });
 
   return token;
@@ -96,14 +96,15 @@ export async function createPasswordResetToken(email: string): Promise<string | 
 
 export async function resetPassword(token: string, newPassword: string): Promise<boolean> {
   try {
+    const tokenHash = hashToken(token);
     return await prisma.$transaction(async (tx) => {
-      const reset = await tx.passwordReset.findUnique({ where: { token } });
+      const reset = await tx.passwordReset.findUnique({ where: { token: tokenHash } });
       if (!reset || reset.used || reset.expiresAt < new Date()) return false;
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
       await tx.passwordReset.update({
-        where: { token },
+        where: { token: tokenHash },
         data: { used: true },
       });
 

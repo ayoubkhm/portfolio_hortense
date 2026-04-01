@@ -5,6 +5,7 @@ import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canManageUsers } from "@/lib/roles";
 import { validatePassword } from "@/lib/password-validation";
 import { logAudit } from "@/lib/audit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   const { error: authError, admin } = await requireAuth(request);
@@ -27,6 +28,14 @@ export async function POST(request: NextRequest) {
 
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
+
+  const allowed = await checkRateLimit(`create-user:${admin!.id}`, 10, 60 * 60 * 1000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Trop de créations d'utilisateurs. Réessayez plus tard." },
+      { status: 429 }
+    );
+  }
 
   const { email, name, password } = await request.json();
 

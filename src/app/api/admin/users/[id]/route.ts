@@ -5,6 +5,7 @@ import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canManageUsers } from "@/lib/roles";
 import { validatePassword } from "@/lib/password-validation";
 import { logAudit } from "@/lib/audit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,6 +16,14 @@ export async function PATCH(
 
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
+
+  const allowed = await checkRateLimit(`update-user:${admin!.id}`, 20, 60 * 60 * 1000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Trop de modifications d'utilisateurs. Réessayez plus tard." },
+      { status: 429 }
+    );
+  }
 
   const { id } = await params;
   const body = await request.json();
@@ -75,6 +84,14 @@ export async function DELETE(
 
   const roleError = requireRole(admin!, canManageUsers);
   if (roleError) return roleError;
+
+  const allowed = await checkRateLimit(`delete-user:${admin!.id}`, 5, 60 * 60 * 1000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Trop de suppressions d'utilisateurs. Réessayez plus tard." },
+      { status: 429 }
+    );
+  }
 
   const { id } = await params;
 

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { sendContactNotification } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const VALID_SERVICES = ["Mariage", "Drone", "Autre"] as const;
 const FIFTEEN_MINUTES = 15 * 60 * 1000;
 

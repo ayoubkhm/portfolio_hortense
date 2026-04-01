@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/db";
 
-/**
- * Database-backed rate limiting.
- * Works across multiple server instances / serverless deployments.
- */
 export async function checkRateLimit(
   key: string,
   maxAttempts: number,
@@ -11,39 +7,43 @@ export async function checkRateLimit(
 ): Promise<boolean> {
   const now = new Date();
 
-  // Clean up expired entries periodically (1% chance per request)
-  if (Math.random() < 0.01) {
+  // Cleanup expired entries (5% chance, with proper error logging)
+  if (Math.random() < 0.05) {
     prisma.rateLimit
       .deleteMany({ where: { expiresAt: { lt: now } } })
-      .catch(() => {});
+      .catch((err) => console.error("[SECURITY] RateLimit cleanup failed:", err));
   }
 
-  // Find existing rate limit entry
-  const existing = await prisma.rateLimit.findFirst({
-    where: { key, expiresAt: { gt: now } },
-  });
-
-  if (!existing) {
-    // First request in window — create entry
-    await prisma.rateLimit.create({
-      data: {
+  try {
+    // Use upsert to atomically create or increment
+    const entry = await prisma.rateLimit.upsert({
+      where: { key },
+      create: {
         key,
         count: 1,
         expiresAt: new Date(now.getTime() + windowMs),
       },
+      update: {
+        // Only increment if not expired; if expired, reset
+        count: { increment: 1 },
+      },
     });
+
+    // If the entry is expired, delete and recreate
+    if (entry.expiresAt < now) {
+      await prisma.rateLimit.update({
+        where: { key },
+        data: {
+          count: 1,
+          expiresAt: new Date(now.getTime() + windowMs),
+        },
+      });
+      return true;
+    }
+
+    return entry.count <= maxAttempts;
+  } catch {
+    // On error (e.g., unique constraint race), allow the request
     return true;
   }
-
-  if (existing.count >= maxAttempts) {
-    return false; // Rate limited
-  }
-
-  // Increment counter
-  await prisma.rateLimit.update({
-    where: { id: existing.id },
-    data: { count: existing.count + 1 },
-  });
-
-  return true;
 }
