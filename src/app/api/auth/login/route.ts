@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPassword, createSession, setSessionCookie } from "@/lib/auth";
+import { verifyAdmin, createSession, setSessionCookie } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { password } = body;
+    const { email, password } = body;
+
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "L'email est requis." },
+        { status: 400 }
+      );
+    }
 
     if (!password || typeof password !== "string") {
       return NextResponse.json(
@@ -13,11 +20,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isValid = await verifyPassword(password);
+    const { valid } = await verifyAdmin(email, password);
 
-    if (!isValid) {
+    if (!valid) {
       return NextResponse.json(
-        { error: "Mot de passe incorrect." },
+        { error: "Email ou mot de passe incorrect." },
         { status: 401 }
       );
     }

@@ -2,6 +2,7 @@ export interface PlaceholderImage {
   src: string;
   alt: string;
   category: string;
+  video?: string;
 }
 
 export const placeholders: Record<string, PlaceholderImage[]> = {
@@ -14,19 +15,23 @@ export const placeholders: Record<string, PlaceholderImage[]> = {
     { src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&q=80", alt: "Préparatifs mariage", category: "mariage" },
   ],
   "drone-immobilier": [
-    { src: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80", alt: "Vue aérienne propriété", category: "drone-immobilier" },
-    { src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80", alt: "Maison vue du ciel", category: "drone-immobilier" },
-    { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80", alt: "Villa aérienne", category: "drone-immobilier" },
+    { src: "/uploads/drone/atelier-des-citerne.png", alt: "Atelier des Citernes — vue aérienne", category: "drone-immobilier" },
+    { src: "/uploads/drone/latelier-des-citerne.png", alt: "L'Atelier des Citernes — vue drone", category: "drone-immobilier" },
+    { src: "/uploads/drone/saint-ouen.png", alt: "Saint-Ouen — vue aérienne", category: "drone-immobilier" },
+    { src: "/uploads/drone/saint-ouen-2.png", alt: "Saint-Ouen — perspective drone", category: "drone-immobilier" },
   ],
   "drone-chantier": [
-    { src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80", alt: "Chantier vue aérienne", category: "drone-chantier" },
-    { src: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&q=80", alt: "Suivi de chantier", category: "drone-chantier" },
-    { src: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80", alt: "Construction aérienne", category: "drone-chantier" },
+    { src: "/uploads/drone/ecole-marseille.png", alt: "École Marseille — suivi de chantier", category: "drone-chantier" },
+    { src: "/uploads/drone/ecole-marseille-2.png", alt: "École Marseille — vue aérienne 2", category: "drone-chantier" },
+    { src: "/uploads/drone/ecole-marseille-3.png", alt: "École Marseille — vue aérienne 3", category: "drone-chantier" },
+    { src: "/uploads/drone/marseille-.png", alt: "Marseille — vue drone", category: "drone-chantier" },
   ],
   "drone-evenement": [
-    { src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80", alt: "Événement vue aérienne", category: "drone-evenement" },
-    { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", alt: "Festival aérien", category: "drone-evenement" },
-    { src: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=80", alt: "Concert vue drone", category: "drone-evenement" },
+    { src: "/uploads/drone/islande.png", alt: "Islande — paysage aérien", category: "drone-evenement" },
+    { src: "/uploads/drone/islande-2.png", alt: "Islande — vue drone", category: "drone-evenement" },
+    { src: "/uploads/drone/labenne.png", alt: "Labenne — vue aérienne", category: "drone-evenement" },
+    { src: "/uploads/drone/labenne-2.png", alt: "Labenne — perspective drone", category: "drone-evenement" },
+    { src: "/uploads/drone/pyrenee.png", alt: "Pyrénées — panorama drone", category: "drone-evenement" },
   ],
 };
 

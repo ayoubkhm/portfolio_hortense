@@ -2,10 +2,10 @@ import { Metadata } from "next";
 import PageHero from "@/components/sections/PageHero";
 import PricingCard from "@/components/sections/PricingCard";
 import CTASection from "@/components/sections/CTASection";
-import { GalleryProvider } from "@/components/gallery/GalleryContext";
-import GalleryGrid from "@/components/gallery/GalleryGrid";
-import GalleryLightbox from "@/components/gallery/GalleryLightbox";
-import { getPlaceholders } from "@/lib/placeholders";
+import MariageCategoryGallery from "./MariageCategoryGallery";
+import { getContent, MARIAGE_DEFAULTS, MariageContent } from "@/lib/content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Photographie de Mariage | Hortense de Ruidiaz",
@@ -13,86 +13,81 @@ export const metadata: Metadata = {
     "Photographe de mariage à Bordeaux. Capturer les émotions et les instants précieux de votre plus beau jour avec sensibilité et élégance.",
 };
 
-const pricingPlans = [
-  {
-    title: "Essentiel",
-    price: "À partir de 1 000 €",
-    features: [
-      "Couverture 6h",
-      "300+ photos retouchées",
-      "Galerie privée en ligne",
-    ],
-  },
-  {
-    title: "Complet",
-    price: "À partir de 1 800 €",
-    features: [
-      "Couverture journée complète",
-      "500+ photos retouchées",
-      "Galerie privée",
-      "Album photo 30x30",
-      "Séance engagement offerte",
-    ],
-    highlighted: true,
-  },
-  {
-    title: "Sur Mesure",
-    price: "Sur devis",
-    features: [
-      "Drone en supplément",
-      "Second photographe",
-      "Couverture multi-jours",
-    ],
-  },
-];
+export default async function MariagePage() {
+  const content = await getContent<MariageContent>("content_mariage", MARIAGE_DEFAULTS);
 
-export default function MariagePage() {
-  const images = getPlaceholders("mariage");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Photographie de Mariage",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Hortense de Ruidiaz",
+    },
+    "areaServed": "Bordeaux, Nouvelle-Aquitaine",
+    "description": "Photographe de mariage à Bordeaux. Capturer les émotions et les instants précieux de votre plus beau jour.",
+    "offers": [
+      { "@type": "Offer", "name": "Photo Standard", "price": "1100", "priceCurrency": "EUR" },
+      { "@type": "Offer", "name": "Photo Premium", "price": "1700", "priceCurrency": "EUR" },
+      { "@type": "Offer", "name": "Vidéo Standard", "price": "1600", "priceCurrency": "EUR" },
+      { "@type": "Offer", "name": "Vidéo Premium", "price": "2100", "priceCurrency": "EUR" },
+    ],
+  };
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <PageHero
-        title="Photographie de Mariage"
-        subtitle="Des souvenirs qui traversent le temps"
-        backgroundImage="https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80"
+        title={content.heroTitle}
+        subtitle={content.heroSubtitle}
+        backgroundImage={content.heroBackgroundImage}
       />
 
       {/* Description */}
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto space-y-6 text-warmgray leading-relaxed">
-          <p className="text-lg">
-            Votre mariage est une histoire unique, et chaque détail compte. De la
-            douceur des préparatifs à l’émotion de la cérémonie, en passant par la
-            joie des célébrations, je m’attache à capturer ces instants avec
-            authenticité et sensibilité.
-          </p>
-          <p>
-            Mon approche est discrète et naturelle : je vous accompagne tout au
-            long de la journée pour saisir les regards complices, les rires
-            spontanés et les larmes de bonheur. Chaque cliché raconte un moment
-            de votre histoire, avec une esthétique intemporelle et chaleureuse.
-          </p>
-          <p>
-            Basée à Bordeaux, j’interviens dans toute la Nouvelle-Aquitaine et
-            au-delà. Rencontrons-nous pour échanger autour de votre projet et
-            créer ensemble les souvenirs de votre plus beau jour.
-          </p>
+          {content.descriptionParagraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
         </div>
       </section>
 
-      {/* Gallery */}
+      {/* Category Gallery */}
       <section className="pb-20 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-12">
-            Galerie Mariage
+            {content.galleryHeading}
           </h2>
-          <GalleryProvider>
-            <GalleryGrid category="mariage" />
-            <GalleryLightbox
-              images={images.map((img) => ({ src: img.src, alt: img.alt }))}
-            />
-          </GalleryProvider>
+          <MariageCategoryGallery />
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section className="py-20 px-4 bg-sand">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-12">
+            {content.videoSectionHeading}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {content.videoEmbeds.map((video) => (
+              <div
+                key={video.src}
+                className="relative aspect-video rounded-2xl overflow-hidden shadow-md"
+              >
+                <iframe
+                  src={video.src}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -100,24 +95,37 @@ export default function MariagePage() {
       <section className="py-20 px-4 bg-cream">
         <div className="max-w-5xl mx-auto">
           <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-4">
-            Formules & Tarifs
+            {content.pricingHeading}
           </h2>
           <p className="text-warmgray text-center mb-12 max-w-xl mx-auto">
-            Chaque formule est personnalisable selon vos envies et votre budget.
+            {content.pricingSubtitle}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {pricingPlans.map((plan) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {content.pricingPlans.map((plan) => (
               <PricingCard key={plan.title} {...plan} />
             ))}
+          </div>
+          {/* Download brochure button */}
+          <div className="text-center mt-12">
+            <a
+              href={content.brochurePath}
+              download
+              className="inline-flex items-center gap-2 bg-gold text-white py-3 px-8 rounded-full font-medium text-lg transition-colors hover:bg-gold/90"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Télécharger la plaquette
+            </a>
           </div>
         </div>
       </section>
 
       {/* CTA */}
       <CTASection
-        title="Racontez-moi votre histoire"
-        subtitle="Chaque mariage est unique. Discutons du vôtre autour d’un café ou en visio."
-        buttonText="Prendre contact"
+        title={content.ctaTitle}
+        subtitle={content.ctaSubtitle}
+        buttonText={content.ctaButtonText}
         buttonHref="/contact"
       />
     </main>

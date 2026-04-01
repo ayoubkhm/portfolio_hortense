@@ -1,10 +1,22 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function HeroSection() {
+const DEFAULT_VIDEO = "/uploads/hero-video.mp4";
+
+interface HeroSectionProps {
+  title?: string;
+  subtitle?: string;
+  subSubtitle?: string;
+}
+
+export default function HeroSection({
+  title = "Hortense de Ruidiaz",
+  subtitle = "Photographie et prises de vues aériennes par drone à Bordeaux",
+  subSubtitle = "Pour les professionnels et les particuliers",
+}: HeroSectionProps) {
   const [showChevron, setShowChevron] = useState(true);
+  const [videoSrc, setVideoSrc] = useState(DEFAULT_VIDEO);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,26 +26,40 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    fetch("/api/settings/hero-video")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.path) setVideoSrc(data.path);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      <Image
-        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80"
-        alt="Photo de mariage"
-        fill
-        className="object-cover"
-        priority
-        sizes="100vw"
-      />
+      <video
+        key={videoSrc}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src={videoSrc} type="video/mp4" />
+      </video>
 
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
         <h1 className="font-serif text-5xl font-bold text-white md:text-7xl">
-          Hortense de Ruidiaz
+          {title}
         </h1>
 
         <p className="mt-4 text-lg tracking-wide text-sand md:text-xl">
-          Photographe &amp; Opératrice Drone — Bordeaux
+          {subtitle}
+        </p>
+        <p className="mt-2 text-base tracking-wide text-sand/80 md:text-lg">
+          {subSubtitle}
         </p>
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row">

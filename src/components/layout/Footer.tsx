@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getContent, CONTACT_DEFAULTS, ContactContent } from "@/lib/content";
 
 const footerLinks = [
   { href: "/mariage", label: "Mariage" },
@@ -7,7 +8,9 @@ const footerLinks = [
   { href: "/mentions-legales", label: "Mentions légales" },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const contact = await getContent<ContactContent>("content_contact", CONTACT_DEFAULTS);
+
   return (
     <footer className="bg-charcoal text-sand">
       <div className="mx-auto max-w-6xl px-6 py-12">
@@ -29,9 +32,9 @@ export default function Footer() {
           </nav>
 
           <div className="text-center text-sm text-sand/70 md:text-right">
-            <p>Bordeaux, France</p>
-            <a href="mailto:contact@hortensederuidiaz.fr" className="transition-colors hover:text-gold">
-              contact@hortensederuidiaz.fr
+            <p>{contact.location}</p>
+            <a href={`mailto:${contact.email}`} className="transition-colors hover:text-gold">
+              {contact.email}
             </a>
           </div>
         </div>

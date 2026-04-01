@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { sendContactNotification } from "@/lib/email";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VALID_SERVICES = ["Mariage", "Drone", "Autre"] as const;
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest) {
     const submission = await prisma.contactSubmission.create({
       data: { name, email, phone, service, message },
     });
+
+    // Fire-and-forget email notification
+    sendContactNotification({ name, email, phone: phone || undefined, service, message }).catch(console.error);
 
     return NextResponse.json({ success: true, id: submission.id }, { status: 201 });
   } catch (error) {

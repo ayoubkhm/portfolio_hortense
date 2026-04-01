@@ -6,15 +6,17 @@ import { cookies } from "next/headers";
 const SESSION_COOKIE = "admin_session";
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24h
 
-export async function verifyPassword(password: string): Promise<boolean> {
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return false;
+export async function verifyAdmin(
+  email: string,
+  password: string
+): Promise<{ valid: boolean; adminName?: string }> {
+  const admin = await prisma.admin.findUnique({ where: { email } });
+  if (!admin) return { valid: false };
 
-  // Support both plain text (dev) and hashed passwords
-  if (adminPassword.startsWith("$2")) {
-    return bcrypt.compare(password, adminPassword);
-  }
-  return password === adminPassword;
+  const isValid = await bcrypt.compare(password, admin.password);
+  if (!isValid) return { valid: false };
+
+  return { valid: true, adminName: admin.name };
 }
 
 export async function createSession(): Promise<string> {
@@ -62,4 +64,36 @@ export function setSessionCookie(token: string) {
     maxAge: SESSION_DURATION / 1000,
     path: "/",
   };
+}
+
+export async function createPasswordResetToken(email: string): Promise<string | null> {
+  const admin = await prisma.admin.findUnique({ where: { email } });
+  if (!admin) return null;
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
+
+  await prisma.passwordReset.create({
+    data: { email, token, expiresAt },
+  });
+
+  return token;
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<boolean> {
+  const reset = await prisma.passwordReset.findUnique({ where: { token } });
+  if (!reset || reset.used || reset.expiresAt < new Date()) return false;
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await prisma.admin.update({
+    where: { email: reset.email },
+    data: { password: hashedPassword },
+  });
+
+  await prisma.passwordReset.update({
+    where: { token },
+    data: { used: true },
+  });
+
+  return true;
 }
