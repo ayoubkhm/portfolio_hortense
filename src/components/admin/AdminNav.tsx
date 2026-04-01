@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const NAV_LINKS = [
@@ -76,6 +76,18 @@ export default function AdminNav() {
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch unread message count
+  useEffect(() => {
+    fetch("/api/contact/submissions")
+      .then((r) => r.json())
+      .then((data) => {
+        const submissions = data.submissions || [];
+        setUnreadCount(submissions.filter((s: { read: boolean }) => !s.read).length);
+      })
+      .catch(() => {});
+  }, [pathname]); // Refresh on navigation
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -116,7 +128,12 @@ export default function AdminNav() {
               }`}
             >
               {link.icon}
-              {link.label}
+              <span className="flex-1">{link.label}</span>
+              {link.href === "/admin/messages" && unreadCount > 0 && (
+                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white px-1.5">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </Link>
           );
         })}

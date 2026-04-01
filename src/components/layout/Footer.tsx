@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { getContent, CONTACT_DEFAULTS, ContactContent } from "@/lib/content";
+import { useEffect, useState } from "react";
 
 const footerLinks = [
   { href: "/mariage", label: "Mariage" },
@@ -8,8 +10,19 @@ const footerLinks = [
   { href: "/mentions-legales", label: "Mentions légales" },
 ];
 
-export default async function Footer() {
-  const contact = await getContent<ContactContent>("content_contact", CONTACT_DEFAULTS);
+export default function Footer() {
+  const [email, setEmail] = useState("contact@hortensederuidiaz.com");
+  const [location, setLocation] = useState("Bordeaux, France");
+
+  useEffect(() => {
+    fetch("/api/content/content_contact")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.email) setEmail(data.email);
+        if (data.location) setLocation(data.location);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-charcoal text-sand">
@@ -32,9 +45,9 @@ export default async function Footer() {
           </nav>
 
           <div className="text-center text-sm text-sand/70 md:text-right">
-            <p>{contact.location}</p>
-            <a href={`mailto:${contact.email}`} className="transition-colors hover:text-gold">
-              {contact.email}
+            <p>{location}</p>
+            <a href={`mailto:${email}`} className="transition-colors hover:text-gold">
+              {email}
             </a>
           </div>
         </div>

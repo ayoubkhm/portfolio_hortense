@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
+import { requireAuth, requireRole } from "@/lib/api-auth";
+import { canEditContent } from "@/lib/roles";
+import { logAudit } from "@/lib/audit";
 import {
   getContent,
   saveContent,
@@ -17,18 +19,8 @@ const DEFAULTS: Record<string, any> = {
   content_drone: DRONE_DEFAULTS,
   content_contact: CONTACT_DEFAULTS,
   content_mariage_gallery: {},
+  content_theme: {},
 };
-
-async function isAuthenticated(request: NextRequest): Promise<boolean> {
-  const token = request.cookies.get("admin_session")?.value;
-  if (!token) return false;
-  const session = await prisma.session.findUnique({ where: { token } });
-  if (!session || session.expiresAt < new Date()) {
-    if (session) await prisma.session.delete({ where: { token } });
-    return false;
-  }
-  return true;
-}
 
 export async function GET(
   _request: NextRequest,
@@ -55,10 +47,11 @@ export async function PUT(
     return NextResponse.json({ error: "Clé inconnue." }, { status: 400 });
   }
 
-  const authenticated = await isAuthenticated(request);
-  if (!authenticated) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  }
+  const { error: authError, admin } = await requireAuth(request);
+  if (authError) return authError;
+
+  const roleError = requireRole(admin!, canEditContent);
+  if (roleError) return roleError;
 
   try {
     const body = await request.json();
@@ -66,6 +59,17 @@ export async function PUT(
       return NextResponse.json({ error: "Données invalides." }, { status: 400 });
     }
     await saveContent(pageKey, body);
+
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    logAudit({
+      adminId: admin!.id,
+      adminEmail: admin!.email,
+      action: "UPDATE_CONTENT",
+      resource: "content",
+      details: pageKey,
+      ipAddress: ip,
+    });
+
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Erreur lors de la sauvegarde." }, { status: 500 });

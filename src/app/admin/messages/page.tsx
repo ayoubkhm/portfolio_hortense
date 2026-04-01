@@ -24,7 +24,7 @@ export default function AdminMessagesPage() {
       const res = await fetch("/api/contact/submissions");
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setSubmissions(data);
+      setSubmissions(data.submissions || []);
     } catch {
       setError("Erreur lors du chargement des messages.");
     } finally {

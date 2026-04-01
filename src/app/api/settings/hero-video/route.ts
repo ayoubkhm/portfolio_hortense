@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { saveFile } from "@/lib/upload";
+import { requireAuth, requireRole } from "@/lib/api-auth";
+import { canChangeSettings } from "@/lib/roles";
 
 const DEFAULT_HERO_VIDEO = "/uploads/hero-video.mp4";
 const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm"];
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
-
-async function isAuthenticated(request: NextRequest): Promise<boolean> {
-  const token = request.cookies.get("admin_session")?.value;
-  if (!token) return false;
-
-  const session = await prisma.session.findUnique({ where: { token } });
-  if (!session || session.expiresAt < new Date()) {
-    if (session) {
-      await prisma.session.delete({ where: { token } });
-    }
-    return false;
-  }
-  return true;
-}
 
 export async function GET() {
   try {
@@ -41,13 +29,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const authenticated = await isAuthenticated(request);
-    if (!authenticated) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const { error: authError, admin } = await requireAuth(request);
+    if (authError) return authError;
+
+    const roleError = requireRole(admin!, canChangeSettings);
+    if (roleError) return roleError;
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;

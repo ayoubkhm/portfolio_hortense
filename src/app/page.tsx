@@ -1,21 +1,30 @@
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
 import ServicesPreview from "@/components/home/ServicesPreview";
-import { getContent, HOMEPAGE_DEFAULTS, HomepageContent } from "@/lib/content";
+import { getContent, HOMEPAGE_DEFAULTS, HomepageContent, MARIAGE_DEFAULTS, MariageContent, DRONE_DEFAULTS, DroneContent } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const content = await getContent<HomepageContent>("content_homepage", HOMEPAGE_DEFAULTS);
+  const mariageContent = await getContent<MariageContent>("content_mariage", MARIAGE_DEFAULTS);
+  const droneContent = await getContent<DroneContent>("content_drone", DRONE_DEFAULTS);
+
+  // Sync service images with their respective page hero backgrounds
+  const services = content.services.map((s) => {
+    if (s.href === "/mariage") return { ...s, imageSrc: mariageContent.heroBackgroundImage };
+    if (s.href === "/drone") return { ...s, imageSrc: droneContent.heroBackgroundImage };
+    return s;
+  });
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Hortense de Ruidiaz",
     "description": "Photographe de mariage et opératrice drone à Bordeaux",
-    "url": "https://hortensederuidiaz.fr",
+    "url": "https://hortensederuidiaz.com",
     "telephone": "+33616282270",
-    "email": "contact@hortensederuidiaz.fr",
+    "email": "contact@hortensederuidiaz.com",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Bordeaux",
@@ -27,7 +36,7 @@ export default async function Home() {
       "latitude": 44.8378,
       "longitude": -0.5792,
     },
-    "image": "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
+    "image": "https://hortensederuidiaz.com/uploads/hortense-portrait.jpg",
     "priceRange": "€€",
     "openingHours": "Mo-Su 09:00-19:00",
     "areaServed": ["Bordeaux", "Gironde", "Nouvelle-Aquitaine"],
@@ -52,7 +61,7 @@ export default async function Home() {
       />
       <ServicesPreview
         heading={content.servicesHeading}
-        services={content.services}
+        services={services}
       />
     </main>
   );

@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/admin',
       },
     ],
-    sitemap: 'https://hortensederuidiaz.fr/sitemap.xml',
+    sitemap: 'https://hortensederuidiaz.com/sitemap.xml',
   }
 }

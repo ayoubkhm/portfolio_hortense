@@ -222,7 +222,7 @@ export const CONTACT_DEFAULTS: ContactContent = {
   heroTitle: "Contact",
   heroSubtitle: "Parlons de votre projet",
   heroBackgroundImage: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=80",
-  email: "contact@hortensederuidiaz.fr",
+  email: "contact@hortensederuidiaz.com",
   phone: "06 16 28 22 70",
   location: "Bordeaux, France",
   availabilityText: "Disponible dans toute la Nouvelle-Aquitaine et au-delà pour vos projets.",
@@ -239,6 +239,7 @@ export const CONTENT_KEYS = [
   "content_mariage_gallery",
   "content_drone",
   "content_contact",
+  "content_theme",
 ] as const;
 
 export type ContentKey = (typeof CONTENT_KEYS)[number];

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import FloatingContact from "@/components/layout/FloatingContact";
+import PublicShell from "@/components/layout/PublicShell";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -26,7 +24,7 @@ export const metadata: Metadata = {
   },
   description:
     "Photographe de mariage et opératrice drone à Bordeaux. Capturer vos plus beaux moments avec authenticité et créativité.",
-  metadataBase: new URL("https://hortensederuidiaz.fr"),
+  metadataBase: new URL("https://hortensederuidiaz.com"),
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -44,10 +42,7 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${inter.variable} font-sans antialiased bg-cream text-charcoal`}
       >
-        <Navbar />
-        {children}
-        <Footer />
-        <FloatingContact />
+        <PublicShell>{children}</PublicShell>
       </body>
     </html>
   );

@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Mentions Légales | Hortense de Ruidiaz',
   description:
-    'Mentions légales du site hortensederuidiaz.fr — Photographe & Drone à Bordeaux.',
+    'Mentions légales du site hortensederuidiaz.com — Photographe & Drone à Bordeaux.',
 }
 
 export default function MentionsLegalesPage() {
@@ -29,8 +29,8 @@ export default function MentionsLegalesPage() {
             <div className="mt-4 space-y-1">
               <p>
                 Le site{' '}
-                <a href="https://hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                  hortensederuidiaz.fr
+                <a href="https://hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                  hortensederuidiaz.com
                 </a>{' '}
                 est édité par&nbsp;:
               </p>
@@ -40,8 +40,8 @@ export default function MentionsLegalesPage() {
                 <li><strong className="text-charcoal">SIRET :</strong> [en cours d&apos;immatriculation]</li>
                 <li><strong className="text-charcoal">Adresse :</strong> Bordeaux, France</li>
                 <li><strong className="text-charcoal">E-mail :</strong>{' '}
-                  <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                    contact@hortensederuidiaz.fr
+                  <a href="mailto:contact@hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                    contact@hortensederuidiaz.com
                   </a>
                 </li>
                 <li><strong className="text-charcoal">Directrice de la publication :</strong> Hortense de Ruidiaz</li>
@@ -73,7 +73,7 @@ export default function MentionsLegalesPage() {
             </h2>
             <div className="mt-4 space-y-3">
               <p>
-                L&apos;ensemble du contenu présent sur le site hortensederuidiaz.fr — incluant, de façon non limitative, les photographies, textes, graphismes, logos, icônes, vidéos et mises en page — est la propriété exclusive de Hortense de Ruidiaz, sauf mention contraire.
+                L&apos;ensemble du contenu présent sur le site hortensederuidiaz.com — incluant, de façon non limitative, les photographies, textes, graphismes, logos, icônes, vidéos et mises en page — est la propriété exclusive de Hortense de Ruidiaz, sauf mention contraire.
               </p>
               <p>
                 Toute reproduction, distribution, modification, adaptation, retransmission ou publication, même partielle, de ces éléments est strictement interdite sans l&apos;accord écrit préalable de Hortense de Ruidiaz.
@@ -108,8 +108,8 @@ export default function MentionsLegalesPage() {
               </p>
               <p>
                 Pour exercer vos droits, vous pouvez nous contacter à l&apos;adresse&nbsp;:{' '}
-                <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                  contact@hortensederuidiaz.fr
+                <a href="mailto:contact@hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                  contact@hortensederuidiaz.com
                 </a>
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function MentionsLegalesPage() {
             </h2>
             <div className="mt-4 space-y-3">
               <p>
-                Le site hortensederuidiaz.fr peut utiliser des cookies strictement nécessaires au fonctionnement du site. Aucun cookie de traçage publicitaire ou de profilage n&apos;est déposé sans votre consentement explicite.
+                Le site hortensederuidiaz.com peut utiliser des cookies strictement nécessaires au fonctionnement du site. Aucun cookie de traçage publicitaire ou de profilage n&apos;est déposé sans votre consentement explicite.
               </p>
               <p>
                 <strong>Cookies techniques :</strong> ces cookies sont indispensables à la navigation sur le site et ne peuvent pas être désactivés.
@@ -140,8 +140,8 @@ export default function MentionsLegalesPage() {
               <p>Pour toute question relative aux présentes mentions légales ou au fonctionnement du site, vous pouvez nous contacter&nbsp;:</p>
               <ul className="ml-5 list-disc space-y-1 text-warmgray">
                 <li><strong className="text-charcoal">Par e-mail :</strong>{' '}
-                  <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                    contact@hortensederuidiaz.fr
+                  <a href="mailto:contact@hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                    contact@hortensederuidiaz.com
                   </a>
                 </li>
                 <li><strong className="text-charcoal">Par courrier :</strong> Hortense de Ruidiaz — Bordeaux, France</li>

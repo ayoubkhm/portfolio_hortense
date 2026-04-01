@@ -34,6 +34,7 @@ model ContactSubmission {
 model Session {
   id        String   @id @default(cuid())
   token     String   @unique
+  adminId   String   @default("")
   expiresAt DateTime
 }
 
@@ -48,6 +49,7 @@ model Admin {
   email     String   @unique
   password  String
   name      String   @default("")
+  role      String   @default("lecteur")
   createdAt DateTime @default(now())
 }
 
@@ -58,4 +60,15 @@ model PasswordReset {
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  adminEmail String   @default("")
+  action     String
+  resource   String
+  details    String   @default("")
+  ipAddress  String   @default("")
+  createdAt  DateTime @default(now())
 }

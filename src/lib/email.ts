@@ -1,8 +1,19 @@
 import { Resend } from "resend";
 
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@hortensederuidiaz.fr";
+const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@hortensederuidiaz.com";
 
 interface ContactNotificationData {
   name: string;
@@ -39,7 +50,7 @@ export async function sendContactNotification(
                 Nom
               </td>
               <td style="padding: 12px 16px; color: #2C2C2C; font-size: 15px; border-bottom: 1px solid #E8E0D4;">
-                ${data.name}
+                ${escapeHtml(data.name)}
               </td>
             </tr>
             <tr>
@@ -47,7 +58,7 @@ export async function sendContactNotification(
                 Email
               </td>
               <td style="padding: 12px 16px; font-size: 15px; border-bottom: 1px solid #E8E0D4;">
-                <a href="mailto:${data.email}" style="color: #C9A96E; text-decoration: none;">${data.email}</a>
+                <a href="mailto:${escapeHtml(data.email)}" style="color: #C9A96E; text-decoration: none;">${escapeHtml(data.email)}</a>
               </td>
             </tr>
             ${
@@ -57,7 +68,7 @@ export async function sendContactNotification(
                 Téléphone
               </td>
               <td style="padding: 12px 16px; color: #2C2C2C; font-size: 15px; border-bottom: 1px solid #E8E0D4;">
-                ${data.phone}
+                ${escapeHtml(data.phone)}
               </td>
             </tr>`
                 : ""
@@ -68,7 +79,7 @@ export async function sendContactNotification(
               </td>
               <td style="padding: 12px 16px; color: #2C2C2C; font-size: 15px; border-bottom: 1px solid #E8E0D4;">
                 <span style="display: inline-block; background-color: #C9A96E; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-size: 13px; font-weight: 600;">
-                  ${data.service}
+                  ${escapeHtml(data.service)}
                 </span>
               </td>
             </tr>
@@ -77,7 +88,7 @@ export async function sendContactNotification(
                 Message
               </td>
               <td style="padding: 12px 16px; color: #2C2C2C; font-size: 15px; line-height: 1.6;">
-                ${data.message.replace(/\n/g, "<br />")}
+                ${escapeHtml(data.message).replace(/\n/g, "<br />")}
               </td>
             </tr>
           </table>
@@ -102,6 +113,13 @@ export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string
 ): Promise<boolean> {
+  if (!/^https?:\/\//i.test(resetUrl)) {
+    console.error("Invalid reset URL: must start with http:// or https://");
+    return false;
+  }
+
+  const safeResetUrl = escapeHtml(resetUrl);
+
   try {
     await resend.emails.send({
       from: `Hortense de Ruidiaz <${FROM_EMAIL}>`,
@@ -118,7 +136,7 @@ export async function sendPasswordResetEmail(
           <p style="color: #6B6560; line-height: 1.6; margin-bottom: 30px;">
             Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien expire dans 1 heure.
           </p>
-          <a href="${resetUrl}" style="display: inline-block; background-color: #C9A96E; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+          <a href="${safeResetUrl}" style="display: inline-block; background-color: #C9A96E; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
             Réinitialiser mon mot de passe
           </a>
           <p style="color: #6B6560; font-size: 13px; line-height: 1.6; margin-top: 30px;">

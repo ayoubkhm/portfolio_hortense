@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resetPassword } from "@/lib/auth";
+import { validatePassword } from "@/lib/password-validation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,9 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (password.length < 8) {
+    const passwordError = validatePassword(password);
+    if (passwordError) {
       return NextResponse.json(
-        { error: "Le mot de passe doit contenir au moins 8 caractères." },
+        { error: passwordError },
         { status: 400 }
       );
     }

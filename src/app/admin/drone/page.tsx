@@ -5,9 +5,12 @@ import type { DroneContent } from "@/lib/content";
 import TextField from "@/components/admin/fields/TextField";
 import TextAreaField from "@/components/admin/fields/TextAreaField";
 import ParagraphsField from "@/components/admin/fields/ParagraphsField";
+import BackgroundImageField from "@/components/admin/fields/BackgroundImageField";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default function AdminDronePage() {
   const [data, setData] = useState<DroneContent | null>(null);
+  const [previousData, setPreviousData] = useState<DroneContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState("");
@@ -33,12 +36,20 @@ export default function AdminDronePage() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error();
+      setPreviousData(JSON.parse(JSON.stringify(data)));
       setSuccess("Contenu sauvegardé avec succès !");
       setTimeout(() => setSuccess(""), 3000);
     } catch {
       setError("Erreur lors de la sauvegarde.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleRevert = () => {
+    if (previousData) {
+      setData(JSON.parse(JSON.stringify(previousData)));
+      setPreviousData(null);
     }
   };
 
@@ -81,19 +92,14 @@ export default function AdminDronePage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#2C2C2C]">Page Drone</h1>
-          <p className="mt-1 text-[#6B6560]">Gérez le contenu de la page drone.</p>
-        </div>
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="bg-[#C9A96E] text-white px-6 py-2.5 rounded-lg hover:bg-[#b8984f] transition-all disabled:opacity-50 font-medium"
-        >
-          {isSaving ? "Sauvegarde..." : "Sauvegarder"}
-        </button>
-      </div>
+      <AdminPageHeader
+        title="Page Drone"
+        subtitle="Gérez le contenu de la page drone."
+        previewHref="/drone"
+        isSaving={isSaving}
+        onSave={handleSave}
+        onRevert={previousData ? handleRevert : null}
+      />
 
       {success && (
         <div className="p-3 rounded-lg bg-[#8A9A7B]/10 border border-[#8A9A7B]/30 text-[#8A9A7B] text-sm">
@@ -111,13 +117,7 @@ export default function AdminDronePage() {
         <h2 className="text-lg font-semibold text-[#2C2C2C]">Hero</h2>
         <TextField label="Titre" value={data.heroTitle} onChange={(v) => update("heroTitle", v)} />
         <TextField label="Sous-titre" value={data.heroSubtitle} onChange={(v) => update("heroSubtitle", v)} />
-        <TextField label="Image de fond (URL)" value={data.heroBackgroundImage} onChange={(v) => update("heroBackgroundImage", v)} />
-        {data.heroBackgroundImage && (
-          <div className="mt-2">
-            <p className="text-xs text-[#6B6560] mb-1">Aperçu :</p>
-            <img src={data.heroBackgroundImage} alt="Hero" className="w-full max-w-md h-32 object-cover rounded-lg border border-[#E8E0D4]" />
-          </div>
-        )}
+        <BackgroundImageField label="Image de fond" value={data.heroBackgroundImage} onChange={(v) => update("heroBackgroundImage", v)} recommendedSize="1920 x 1080 px (16:9, paysage)" />
       </div>
 
       {/* Description */}

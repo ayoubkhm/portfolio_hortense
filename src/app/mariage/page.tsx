@@ -48,7 +48,7 @@ export default async function MariagePage() {
       />
 
       {/* Description */}
-      <section className="py-20 px-4">
+      <section className="pt-12 pb-20 px-4">
         <div className="max-w-3xl mx-auto space-y-6 text-warmgray leading-relaxed">
           {content.descriptionParagraphs.map((p, i) => (
             <p key={i}>{p}</p>

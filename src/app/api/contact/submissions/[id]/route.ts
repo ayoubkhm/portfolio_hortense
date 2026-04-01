@@ -1,32 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-
-async function isAuthenticated(request: NextRequest): Promise<boolean> {
-  const token = request.cookies.get("admin_session")?.value;
-  if (!token) return false;
-
-  const session = await prisma.session.findUnique({ where: { token } });
-  if (!session || session.expiresAt < new Date()) {
-    if (session) {
-      await prisma.session.delete({ where: { token } });
-    }
-    return false;
-  }
-  return true;
-}
+import { requireAuth, requireRole } from "@/lib/api-auth";
+import { canManageMessages } from "@/lib/roles";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authenticated = await isAuthenticated(request);
-    if (!authenticated) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const { error: authError, admin } = await requireAuth(request);
+    if (authError) return authError;
+
+    const roleError = requireRole(admin!, canManageMessages);
+    if (roleError) return roleError;
 
     const { id } = await params;
 
@@ -63,13 +49,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authenticated = await isAuthenticated(request);
-    if (!authenticated) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const { error: authError, admin } = await requireAuth(request);
+    if (authError) return authError;
+
+    const roleError = requireRole(admin!, canManageMessages);
+    if (roleError) return roleError;
 
     const { id } = await params;
 

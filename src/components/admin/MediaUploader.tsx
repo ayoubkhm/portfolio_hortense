@@ -2,12 +2,38 @@
 
 import { useState, useRef, useCallback } from "react";
 
-const CATEGORIES = [
+const PARENT_CATEGORIES = [
   { value: "mariage", label: "Mariage" },
-  { value: "drone-immobilier", label: "Drone Immobilier" },
-  { value: "drone-chantier", label: "Drone Chantier" },
-  { value: "drone-evenement", label: "Drone Evenement" },
+  { value: "drone", label: "Drone" },
+  { value: "autre", label: "Autre" },
 ];
+
+const SUB_CATEGORIES: Record<string, { value: string; label: string }[]> = {
+  mariage: [
+    { value: "preparatifs", label: "Préparatifs" },
+    { value: "photos-de-couple", label: "Photos de couple" },
+    { value: "ceremonie", label: "Cérémonie" },
+    { value: "photos-de-groupe", label: "Photos de groupe" },
+    { value: "cocktail", label: "Cocktail" },
+    { value: "soiree", label: "Soirée" },
+    { value: "video", label: "Vidéo" },
+  ],
+  drone: [
+    { value: "immobilier", label: "Immobilier" },
+    { value: "architecture", label: "Architecture" },
+    { value: "chantier", label: "Suivi de chantier" },
+    { value: "evenement", label: "Événement" },
+    { value: "paysage", label: "Paysage" },
+    { value: "sport", label: "Sport" },
+  ],
+  autre: [
+    { value: "portrait", label: "Portrait" },
+    { value: "video", label: "Vidéo" },
+    { value: "document", label: "Document" },
+  ],
+};
+
+const NEW_SUBCATEGORY_VALUE = "__new__";
 
 interface MediaUploaderProps {
   onUpload: () => void;
@@ -15,7 +41,10 @@ interface MediaUploaderProps {
 
 export default function MediaUploader({ onUpload }: MediaUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [category, setCategory] = useState(CATEGORIES[0].value);
+  const [parentCategory, setParentCategory] = useState("mariage");
+  const [subCategory, setSubCategory] = useState("");
+  const [isNewSub, setIsNewSub] = useState(false);
+  const [newSubName, setNewSubName] = useState("");
   const [alt, setAlt] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
@@ -54,9 +83,17 @@ export default function MediaUploader({ onUpload }: MediaUploaderProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      setError("Veuillez selectionner un fichier.");
+      setError("Veuillez sélectionner un fichier.");
       return;
     }
+
+    // Build category string: "mariage" or "mariage/preparatifs"
+    let actualSub = isNewSub ? newSubName.trim() : subCategory;
+    // Strip any non-alphanumeric/dash/space characters (including accented letters)
+    actualSub = actualSub.replace(/[^a-zA-ZÀ-ÿ0-9\s-]/g, "");
+    const category = actualSub
+      ? `${parentCategory}/${actualSub.toLowerCase().replace(/\s+/g, "-")}`
+      : parentCategory;
 
     setIsUploading(true);
     setError("");
@@ -80,9 +117,12 @@ export default function MediaUploader({ onUpload }: MediaUploaderProps) {
         return;
       }
 
-      setSuccess("Media ajoute avec succes !");
+      setSuccess("Média ajouté avec succès !");
       setFile(null);
       setAlt("");
+      setSubCategory("");
+      setIsNewSub(false);
+      setNewSubName("");
       if (inputRef.current) inputRef.current.value = "";
       onUpload();
     } catch {
@@ -95,7 +135,7 @@ export default function MediaUploader({ onUpload }: MediaUploaderProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-[#E8E0D4] p-6">
       <h2 className="text-lg font-semibold text-[#2C2C2C] mb-4">
-        Ajouter un media
+        Ajouter un média
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div
@@ -140,23 +180,66 @@ export default function MediaUploader({ onUpload }: MediaUploaderProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-[#2C2C2C] mb-1">
-              Categorie
+            <label htmlFor="parent-category" className="block text-sm font-medium text-[#2C2C2C] mb-1">
+              Catégorie
             </label>
             <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              id="parent-category"
+              value={parentCategory}
+              onChange={(e) => {
+                setParentCategory(e.target.value);
+                setSubCategory("");
+                setIsNewSub(false);
+                setNewSubName("");
+              }}
               className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] bg-white text-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:border-transparent"
             >
-              {CATEGORIES.map((cat) => (
+              {PARENT_CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value}>
                   {cat.label}
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label htmlFor="sub-category" className="block text-sm font-medium text-[#2C2C2C] mb-1">
+              Sous-catégorie <span className="text-[#6B6560] text-xs font-normal">(optionnel)</span>
+            </label>
+            <select
+              id="sub-category"
+              value={isNewSub ? NEW_SUBCATEGORY_VALUE : subCategory}
+              onChange={(e) => {
+                if (e.target.value === NEW_SUBCATEGORY_VALUE) {
+                  setIsNewSub(true);
+                  setSubCategory("");
+                } else {
+                  setIsNewSub(false);
+                  setNewSubName("");
+                  setSubCategory(e.target.value);
+                }
+              }}
+              className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] bg-white text-[#2C2C2C] focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:border-transparent"
+            >
+              <option value="">— Aucune —</option>
+              {(SUB_CATEGORIES[parentCategory] || []).map((sub) => (
+                <option key={sub.value} value={sub.value}>
+                  {sub.label}
+                </option>
+              ))}
+              <option value={NEW_SUBCATEGORY_VALUE}>+ Créer une nouvelle...</option>
+            </select>
+            {isNewSub && (
+              <input
+                type="text"
+                value={newSubName}
+                onChange={(e) => setNewSubName(e.target.value)}
+                placeholder="Nom de la nouvelle sous-catégorie"
+                className="w-full mt-2 px-3 py-2 rounded-lg border border-[#C9A96E] bg-[#FAF7F2] text-[#2C2C2C] placeholder-[#6B6560]/50 focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:border-transparent text-sm"
+                autoFocus
+              />
+            )}
           </div>
           <div>
             <label htmlFor="alt" className="block text-sm font-medium text-[#2C2C2C] mb-1">
@@ -189,7 +272,7 @@ export default function MediaUploader({ onUpload }: MediaUploaderProps) {
           disabled={isUploading || !file}
           className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-[#C9A96E] text-white font-medium hover:bg-[#b8984f] focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isUploading ? "Upload en cours..." : "Ajouter le media"}
+          {isUploading ? "Upload en cours..." : "Ajouter le média"}
         </button>
       </form>
     </div>

@@ -1,27 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { validateFile, saveFile } from "@/lib/upload";
-
-async function isAuthenticated(request: NextRequest): Promise<boolean> {
-  const token = request.cookies.get("admin_session")?.value;
-  if (!token) return false;
-
-  const session = await prisma.session.findUnique({ where: { token } });
-  if (!session || session.expiresAt < new Date()) {
-    if (session) {
-      await prisma.session.delete({ where: { token } });
-    }
-    return false;
-  }
-  return true;
-}
+import { requireAuth, requireRole } from "@/lib/api-auth";
+import { canEditContent } from "@/lib/roles";
+import { logAudit } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
 
-    const where = category ? { category } : {};
+    // Support filtering by parent category (e.g. "drone" matches "drone", "drone/immobilier", etc.)
+    const where = category
+      ? {
+          OR: [
+            { category },
+            { category: { startsWith: `${category}/` } },
+          ],
+        }
+      : {};
 
     const media = await prisma.media.findMany({
       where,
@@ -40,13 +37,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const authenticated = await isAuthenticated(request);
-    if (!authenticated) {
-      return NextResponse.json(
-        { error: "Non autorisé." },
-        { status: 401 }
-      );
-    }
+    const { error: authError, admin } = await requireAuth(request);
+    if (authError) return authError;
+
+    const roleError = requireRole(admin!, canEditContent);
+    if (roleError) return roleError;
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -67,16 +62,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validCategories = [
-      "mariage",
-      "drone-immobilier",
-      "drone-chantier",
-      "drone-evenement",
-    ];
+    // Category format: "mariage" or "mariage/preparatifs" or "drone/immobilier"
+    const parentCategory = category.split("/")[0];
+    const validParents = ["mariage", "drone", "autre"];
 
-    if (!validCategories.includes(category)) {
+    if (!validParents.includes(parentCategory)) {
       return NextResponse.json(
-        { error: `Catégorie invalide. Valeurs acceptées: ${validCategories.join(", ")}` },
+        { error: `Catégorie parente invalide. Valeurs acceptées : ${validParents.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    // Validate category format: only lowercase letters, numbers, hyphens, and one optional slash
+    const categoryRegex = /^[a-z]+(\/?[a-z0-9\-]+)?$/;
+    if (!categoryRegex.test(category)) {
+      return NextResponse.json(
+        { error: "Format de catégorie invalide. Utilisez uniquement des lettres minuscules, chiffres et tirets." },
+        { status: 400 }
+      );
+    }
+
+    // Also limit length
+    if (category.length > 50) {
+      return NextResponse.json(
+        { error: "Catégorie trop longue (max 50 caractères)." },
         { status: 400 }
       );
     }
@@ -107,6 +116,16 @@ export async function POST(request: NextRequest) {
         alt,
         sortOrder,
       },
+    });
+
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    logAudit({
+      adminId: admin!.id,
+      adminEmail: admin!.email,
+      action: "UPLOAD_MEDIA",
+      resource: "media",
+      details: filename,
+      ipAddress: ip,
     });
 
     return NextResponse.json({ media }, { status: 201 });
