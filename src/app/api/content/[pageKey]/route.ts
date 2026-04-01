@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { canEditContent } from "@/lib/roles";
 import { protectedHandler } from "@/lib/api-handler";
+import { sanitizeContent, validateContentSize } from "@/lib/content-sanitizer";
 import {
   getContent,
   saveContent,
@@ -48,7 +49,11 @@ export const PUT = protectedHandler(
     if (typeof body !== "object" || body === null) {
       return NextResponse.json({ error: "Données invalides." }, { status: 400 });
     }
-    await saveContent(pageKey, body);
+    if (!validateContentSize(body)) {
+      return NextResponse.json({ error: "Contenu trop volumineux." }, { status: 400 });
+    }
+    const sanitized = sanitizeContent(body);
+    await saveContent(pageKey, sanitized);
 
     return NextResponse.json({ success: true });
   },

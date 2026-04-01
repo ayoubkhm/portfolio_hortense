@@ -81,12 +81,15 @@ export default function AdminNav() {
   // Fetch unread message count
   useEffect(() => {
     fetch("/api/contact/submissions")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Forbidden");
+        return r.json();
+      })
       .then((data) => {
         const submissions = data.submissions || [];
         setUnreadCount(submissions.filter((s: { read: boolean }) => !s.read).length);
       })
-      .catch(() => {});
+      .catch(() => setUnreadCount(0));
   }, [pathname]); // Refresh on navigation
 
   const handleLogout = async () => {

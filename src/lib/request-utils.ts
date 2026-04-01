@@ -7,3 +7,11 @@ export function getClientIp(request: NextRequest): string {
     "unknown"
   );
 }
+
+export function normalizeEmail(email: string): string {
+  const [localPart, domain] = email.toLowerCase().split("@");
+  if (!localPart || !domain) return email.toLowerCase();
+  // Remove plus addressing (user+tag@domain → user@domain)
+  const cleanLocal = localPart.split("+")[0];
+  return `${cleanLocal}@${domain}`;
+}

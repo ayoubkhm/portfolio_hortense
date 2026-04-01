@@ -3,7 +3,7 @@ import { createPasswordResetToken } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/rate-limits-config";
-import { getClientIp } from "@/lib/request-utils";
+import { getClientIp, normalizeEmail } from "@/lib/request-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,8 +27,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = normalizeEmail(email);
+
     // Rate limit by email: max 3 requests per 15 minutes
-    const emailAllowed = await checkRateLimit(`reset-email:${email}`, RATE_LIMITS.PASSWORD_RESET_EMAIL.max, RATE_LIMITS.PASSWORD_RESET_EMAIL.windowMs);
+    const emailAllowed = await checkRateLimit(`reset-email:${normalizedEmail}`, RATE_LIMITS.PASSWORD_RESET_EMAIL.max, RATE_LIMITS.PASSWORD_RESET_EMAIL.windowMs);
     if (!emailAllowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = await createPasswordResetToken(email);
+    const token = await createPasswordResetToken(normalizedEmail);
 
     // Always return success to avoid email enumeration
     if (token) {

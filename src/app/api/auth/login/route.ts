@@ -3,7 +3,7 @@ import { verifyAdmin, createSession, setSessionCookie } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/rate-limits-config";
-import { getClientIp } from "@/lib/request-utils";
+import { getClientIp, normalizeEmail } from "@/lib/request-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,8 +24,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = normalizeEmail(email);
+
     // Rate limit by email: max 5 attempts per 15 minutes
-    const allowed = await checkRateLimit(`login:${email}`, RATE_LIMITS.LOGIN.max, RATE_LIMITS.LOGIN.windowMs);
+    const allowed = await checkRateLimit(`login:${normalizedEmail}`, RATE_LIMITS.LOGIN.max, RATE_LIMITS.LOGIN.windowMs);
     if (!allowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { valid, adminId } = await verifyAdmin(email, password);
+    const { valid, adminId } = await verifyAdmin(normalizedEmail, password);
 
     if (!valid || !adminId) {
       return NextResponse.json(

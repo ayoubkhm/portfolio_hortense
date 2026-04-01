@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 
+let requestCounter = 0;
+
 export async function checkRateLimit(
   key: string,
   maxAttempts: number,
@@ -7,15 +9,16 @@ export async function checkRateLimit(
 ): Promise<boolean> {
   const now = new Date();
 
-  // Cleanup expired entries (5% chance, with proper error logging)
-  if (Math.random() < 0.05) {
+  // Deterministic cleanup every 20 requests
+  requestCounter++;
+  if (requestCounter >= 20) {
+    requestCounter = 0;
     prisma.rateLimit
       .deleteMany({ where: { expiresAt: { lt: now } } })
       .catch((err) => console.error("[SECURITY] RateLimit cleanup failed:", err));
   }
 
   try {
-    // Use upsert to atomically create or increment
     const entry = await prisma.rateLimit.upsert({
       where: { key },
       create: {
@@ -24,12 +27,11 @@ export async function checkRateLimit(
         expiresAt: new Date(now.getTime() + windowMs),
       },
       update: {
-        // Only increment if not expired; if expired, reset
         count: { increment: 1 },
       },
     });
 
-    // If the entry is expired, delete and recreate
+    // If expired, reset
     if (entry.expiresAt < now) {
       await prisma.rateLimit.update({
         where: { key },
@@ -43,7 +45,6 @@ export async function checkRateLimit(
 
     return entry.count <= maxAttempts;
   } catch {
-    // On error (e.g., unique constraint race), allow the request
     return true;
   }
 }

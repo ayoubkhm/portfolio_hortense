@@ -27,11 +27,9 @@ function validateOrigin(request: NextRequest): boolean {
     }
   }
 
-  // No Origin AND no Referer — only allow if it's a fetch/XHR request
-  // (browsers always send Origin or Referer on form submissions)
-  const contentType = request.headers.get("content-type") || "";
-  const isJsonOrFormData = contentType.includes("application/json") || contentType.includes("multipart/form-data");
-  return isJsonOrFormData;
+  // No Origin AND no Referer — block the request
+  // Legitimate browser requests always send at least one of these
+  return false;
 }
 
 export function middleware(request: NextRequest) {
