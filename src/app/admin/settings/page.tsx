@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { AdminUser } from "@/types";
 
 interface ThemeColors {
   cream: string;
@@ -9,14 +10,6 @@ interface ThemeColors {
   warmgray: string;
   sage: string;
   gold: string;
-}
-
-interface AdminUser {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  createdAt: string;
 }
 
 const ROLE_OPTIONS = [

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
-import { logAudit } from "@/lib/audit";
+import { protectedHandler } from "@/lib/api-handler";
 import {
   getContent,
   saveContent,
@@ -37,41 +36,24 @@ export async function GET(
   return NextResponse.json(content);
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ pageKey: string }> }
-) {
-  const { pageKey } = await params;
+export const PUT = protectedHandler(
+  async (request, { params }) => {
+    const pageKey = params?.pageKey;
 
-  if (!CONTENT_KEYS.includes(pageKey as typeof CONTENT_KEYS[number])) {
-    return NextResponse.json({ error: "Clé inconnue." }, { status: 400 });
-  }
+    if (!pageKey || !CONTENT_KEYS.includes(pageKey as typeof CONTENT_KEYS[number])) {
+      return NextResponse.json({ error: "Clé inconnue." }, { status: 400 });
+    }
 
-  const { error: authError, admin } = await requireAuth(request);
-  if (authError) return authError;
-
-  const roleError = requireRole(admin!, canEditContent);
-  if (roleError) return roleError;
-
-  try {
     const body = await request.json();
     if (typeof body !== "object" || body === null) {
       return NextResponse.json({ error: "Données invalides." }, { status: 400 });
     }
     await saveContent(pageKey, body);
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
-    logAudit({
-      adminId: admin!.id,
-      adminEmail: admin!.email,
-      action: "UPDATE_CONTENT",
-      resource: "content",
-      details: pageKey,
-      ipAddress: ip,
-    });
-
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Erreur lors de la sauvegarde." }, { status: 500 });
+  },
+  {
+    roleCheck: canEditContent,
+    audit: { action: "UPDATE_CONTENT", resource: "content" },
   }
-}
+);

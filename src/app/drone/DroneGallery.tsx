@@ -2,28 +2,34 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { getPlaceholders, PlaceholderImage } from "@/lib/placeholders";
 
-interface DroneItem extends PlaceholderImage {
-  video?: string; // URL de la vidéo courte (~30s) — à fournir par Hortense
-}
-
-// Combine all drone images and associate videos when available
-function getDroneItems(): DroneItem[] {
-  const immobilier = getPlaceholders("drone-immobilier");
-  const chantier = getPlaceholders("drone-chantier");
-  const evenement = getPlaceholders("drone-evenement");
-  const all = [...immobilier, ...chantier, ...evenement];
-  // Associer la vidéo d'exemple à la première image — à remplacer quand Hortense fournira les vidéos individuelles
-  if (all.length > 0) {
-    all[0] = { ...all[0], video: "/uploads/hero-video.mp4" };
-  }
-  return all;
+interface DroneItem {
+  src: string;
+  alt: string;
+  category: string;
+  video?: string;
 }
 
 export default function DroneGallery() {
-  const items = getDroneItems();
+  const [items, setItems] = useState<DroneItem[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/media?category=drone")
+      .then((r) => r.json())
+      .then((data) => {
+        const media = data.media || [];
+        setItems(
+          media.map((m: { filepath: string; alt?: string; filename: string; category: string }) => ({
+            src: m.filepath,
+            alt: m.alt || m.filename,
+            category: m.category,
+            video: undefined,
+          }))
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   const selected = selectedIndex !== null ? items[selectedIndex] : null;
 

@@ -1,20 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canManageMessages } from "@/lib/roles";
+import { protectedHandler } from "@/lib/api-handler";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { error: authError, admin } = await requireAuth(request);
-    if (authError) return authError;
-
-    const roleError = requireRole(admin!, canManageMessages);
-    if (roleError) return roleError;
-
-    const { id } = await params;
+export const PATCH = protectedHandler(
+  async (request, { params }) => {
+    const id = params?.id;
 
     const submission = await prisma.contactSubmission.findUnique({
       where: { id },
@@ -35,27 +26,15 @@ export async function PATCH(
     });
 
     return NextResponse.json({ submission: updated }, { status: 200 });
-  } catch (error) {
-    console.error("PATCH /api/contact/submissions/ error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la mise à jour de la soumission." },
-      { status: 500 }
-    );
+  },
+  {
+    roleCheck: canManageMessages,
   }
-}
+);
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { error: authError, admin } = await requireAuth(request);
-    if (authError) return authError;
-
-    const roleError = requireRole(admin!, canManageMessages);
-    if (roleError) return roleError;
-
-    const { id } = await params;
+export const DELETE = protectedHandler(
+  async (_request, { params }) => {
+    const id = params?.id;
 
     const submission = await prisma.contactSubmission.findUnique({
       where: { id },
@@ -70,11 +49,8 @@ export async function DELETE(
     await prisma.contactSubmission.delete({ where: { id } });
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error("DELETE /api/contact/submissions/ error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression de la soumission." },
-      { status: 500 }
-    );
+  },
+  {
+    roleCheck: canManageMessages,
   }
-}
+);

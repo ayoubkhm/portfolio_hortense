@@ -1,59 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import type { ContactContent } from "@/lib/content";
+import { useAdminContent } from "@/hooks/useAdminContent";
 import TextField from "@/components/admin/fields/TextField";
 import BackgroundImageField from "@/components/admin/fields/BackgroundImageField";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default function AdminContactPage() {
-  const [data, setData] = useState<ContactContent | null>(null);
-  const [previousData, setPreviousData] = useState<ContactContent | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetch("/api/content/content_contact")
-      .then((res) => res.json())
-      .then((d) => setData(d))
-      .catch(() => setError("Erreur lors du chargement."))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleSave = async () => {
-    if (!data) return;
-    setIsSaving(true);
-    setError("");
-    setSuccess("");
-    try {
-      const res = await fetch("/api/content/content_contact", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error();
-      setPreviousData(JSON.parse(JSON.stringify(data)));
-      setSuccess("Contenu sauvegardé avec succès !");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch {
-      setError("Erreur lors de la sauvegarde.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleRevert = () => {
-    if (previousData) {
-      setData(JSON.parse(JSON.stringify(previousData)));
-      setPreviousData(null);
-    }
-  };
-
-  const update = <K extends keyof ContactContent>(key: K, value: ContactContent[K]) => {
-    setData((prev) => (prev ? { ...prev, [key]: value } : prev));
-  };
+  const {
+    data,
+    previousData,
+    isLoading,
+    isSaving,
+    success,
+    error,
+    handleSave,
+    handleRevert,
+    update,
+  } = useAdminContent<ContactContent>("content_contact");
 
   if (isLoading) {
     return (

@@ -2,18 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-
-interface Media {
-  id: string;
-  filename: string;
-  filepath: string;
-  mimetype: string;
-  category: string;
-  alt: string;
-  sortOrder: number;
-  featured: boolean;
-  createdAt: string;
-}
+import type { Media } from "@/types";
 
 const PARENT_CATEGORIES = [
   { value: "mariage", label: "Mariage" },

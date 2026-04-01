@@ -1,60 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import type { MariageContent } from "@/lib/content";
+import { useAdminContent } from "@/hooks/useAdminContent";
 import TextField from "@/components/admin/fields/TextField";
 import ParagraphsField from "@/components/admin/fields/ParagraphsField";
 import BackgroundImageField from "@/components/admin/fields/BackgroundImageField";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default function AdminMariagePage() {
-  const [data, setData] = useState<MariageContent | null>(null);
-  const [previousData, setPreviousData] = useState<MariageContent | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetch("/api/content/content_mariage")
-      .then((res) => res.json())
-      .then((d) => setData(d))
-      .catch(() => setError("Erreur lors du chargement."))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleSave = async () => {
-    if (!data) return;
-    setIsSaving(true);
-    setError("");
-    setSuccess("");
-    try {
-      const res = await fetch("/api/content/content_mariage", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error();
-      setPreviousData(JSON.parse(JSON.stringify(data)));
-      setSuccess("Contenu sauvegardé avec succès !");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch {
-      setError("Erreur lors de la sauvegarde.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleRevert = () => {
-    if (previousData) {
-      setData(JSON.parse(JSON.stringify(previousData)));
-      setPreviousData(null);
-    }
-  };
-
-  const update = <K extends keyof MariageContent>(key: K, value: MariageContent[K]) => {
-    setData((prev) => (prev ? { ...prev, [key]: value } : prev));
-  };
+  const {
+    data,
+    previousData,
+    isLoading,
+    isSaving,
+    success,
+    error,
+    handleSave,
+    handleRevert,
+    update,
+  } = useAdminContent<MariageContent>("content_mariage");
 
   const updateVideoEmbed = (index: number, field: "src" | "title", value: string) => {
     if (!data) return;

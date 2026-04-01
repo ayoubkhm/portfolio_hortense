@@ -2,18 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import MediaCard from "./MediaCard";
-
-interface Media {
-  id: string;
-  filename: string;
-  filepath: string;
-  mimetype: string;
-  category: string;
-  alt: string;
-  sortOrder: number;
-  featured: boolean;
-  createdAt: string;
-}
+import type { Media } from "@/types";
 
 interface MediaGridProps {
   refreshKey: number;

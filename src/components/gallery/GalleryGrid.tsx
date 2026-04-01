@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { getPlaceholders, type PlaceholderImage } from "@/lib/placeholders";
 import { GalleryProvider } from "./GalleryContext";
 import GalleryImage from "./GalleryImage";
 import GalleryLightbox from "./GalleryLightbox";
@@ -17,29 +16,19 @@ export interface GalleryImageData {
 export async function getGalleryImages(
   category?: string
 ): Promise<GalleryImageData[]> {
-  let mediaItems: { filepath: string; alt: string; filename: string }[] = [];
-
   try {
-    mediaItems = await prisma.media.findMany({
+    const mediaItems = await prisma.media.findMany({
       where: category ? { category } : undefined,
       orderBy: { sortOrder: "asc" },
     });
-  } catch {
-    // DB may not be available; fall through to placeholders
-  }
 
-  if (mediaItems.length > 0) {
     return mediaItems.map((m) => ({
       src: m.filepath,
       alt: m.alt || m.filename,
     }));
+  } catch {
+    return [];
   }
-
-  const placeholders: PlaceholderImage[] = getPlaceholders(category);
-  return placeholders.map((p) => ({
-    src: p.src,
-    alt: p.alt,
-  }));
 }
 
 export default async function GalleryGrid({

@@ -1,19 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-
-interface Submission {
-  id: string;
-  name: string;
-  email: string;
-  service: string;
-  message: string;
-  read: boolean;
-  createdAt: string;
-}
+import type { ContactSubmission } from "@/types";
 
 export default function AdminMessagesPage() {
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);

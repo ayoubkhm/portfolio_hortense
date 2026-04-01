@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { saveFile } from "@/lib/upload";
-import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canChangeSettings } from "@/lib/roles";
+import { protectedHandler } from "@/lib/api-handler";
 
 const DEFAULT_HERO_VIDEO = "/uploads/hero-video.mp4";
 const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm"];
@@ -27,14 +27,8 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const { error: authError, admin } = await requireAuth(request);
-    if (authError) return authError;
-
-    const roleError = requireRole(admin!, canChangeSettings);
-    if (roleError) return roleError;
-
+export const POST = protectedHandler(
+  async (request) => {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
@@ -68,11 +62,8 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ path: filepath }, { status: 200 });
-  } catch (error) {
-    console.error("POST /api/settings/hero-video error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de l'upload de la vidéo." },
-      { status: 500 }
-    );
+  },
+  {
+    roleCheck: canChangeSettings,
   }
-}
+);

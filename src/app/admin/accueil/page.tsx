@@ -2,18 +2,24 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { HomepageContent } from "@/lib/content";
+import { useAdminContent } from "@/hooks/useAdminContent";
 import TextField from "@/components/admin/fields/TextField";
 import TextAreaField from "@/components/admin/fields/TextAreaField";
 import ParagraphsField from "@/components/admin/fields/ParagraphsField";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default function AdminAccueilPage() {
-  const [data, setData] = useState<HomepageContent | null>(null);
-  const [previousData, setPreviousData] = useState<HomepageContent | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const {
+    data,
+    previousData,
+    isLoading,
+    isSaving,
+    success,
+    error,
+    handleSave,
+    handleRevert,
+    update,
+  } = useAdminContent<HomepageContent>("content_homepage");
 
   // Hero video state
   const [videoPath, setVideoPath] = useState("/uploads/hero-video.mp4");
@@ -29,21 +35,18 @@ export default function AdminAccueilPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/content/content_homepage").then((r) => r.json()),
       fetch("/api/settings/hero-video").then((r) => r.json()),
       fetch("/api/content/content_mariage").then((r) => r.json()),
       fetch("/api/content/content_drone").then((r) => r.json()),
     ])
-      .then(([content, video, mariage, drone]) => {
-        setData(content);
+      .then(([video, mariage, drone]) => {
         if (video.path) setVideoPath(video.path);
         setServiceImages({
           "/mariage": mariage.heroBackgroundImage || "",
           "/drone": drone.heroBackgroundImage || "",
         });
       })
-      .catch(() => setError("Erreur lors du chargement."))
-      .finally(() => setIsLoading(false));
+      .catch(() => {});
   }, []);
 
   const handleVideoFile = (f: File) => {
@@ -87,39 +90,6 @@ export default function AdminAccueilPage() {
       setTimeout(() => setVideoSuccess(""), 3000);
     } catch { setVideoError("Erreur de connexion."); }
     finally { setIsUploadingVideo(false); }
-  };
-
-  const handleSave = async () => {
-    if (!data) return;
-    setIsSaving(true);
-    setError("");
-    setSuccess("");
-    try {
-      const res = await fetch("/api/content/content_homepage", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error();
-      setPreviousData(JSON.parse(JSON.stringify(data)));
-      setSuccess("Contenu sauvegardé avec succès !");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch {
-      setError("Erreur lors de la sauvegarde.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const update = <K extends keyof HomepageContent>(key: K, value: HomepageContent[K]) => {
-    setData((prev) => (prev ? { ...prev, [key]: value } : prev));
-  };
-
-  const handleRevert = () => {
-    if (previousData) {
-      setData(JSON.parse(JSON.stringify(previousData)));
-      setPreviousData(null);
-    }
   };
 
   const updateService = (index: number, field: string, value: string) => {
