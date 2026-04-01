@@ -5,16 +5,33 @@ const STATE_CHANGING_METHODS = ["POST", "PUT", "PATCH", "DELETE"];
 function validateOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
+  const referer = request.headers.get("referer");
 
-  // Allow requests with no origin (server-side, curl, etc.)
-  if (!origin) return true;
-
-  try {
-    const originUrl = new URL(origin);
-    return originUrl.host === host;
-  } catch {
-    return false;
+  // If Origin header is present, validate it matches
+  if (origin) {
+    try {
+      const originUrl = new URL(origin);
+      return originUrl.host === host;
+    } catch {
+      return false;
+    }
   }
+
+  // No Origin header — fall back to Referer check
+  if (referer) {
+    try {
+      const refererUrl = new URL(referer);
+      return refererUrl.host === host;
+    } catch {
+      return false;
+    }
+  }
+
+  // No Origin AND no Referer — only allow if it's a fetch/XHR request
+  // (browsers always send Origin or Referer on form submissions)
+  const contentType = request.headers.get("content-type") || "";
+  const isJsonOrFormData = contentType.includes("application/json") || contentType.includes("multipart/form-data");
+  return isJsonOrFormData;
 }
 
 export function middleware(request: NextRequest) {

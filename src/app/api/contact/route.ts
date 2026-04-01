@@ -1,23 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { sendContactNotification } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VALID_SERVICES = ["Mariage", "Drone", "Autre"] as const;
-
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(key: string, max: number, windowMs: number): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-  if (entry.count >= max) return false;
-  entry.count++;
-  return true;
-}
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,13 +14,14 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    const FIFTEEN_MINUTES = 15 * 60 * 1000;
-    if (!checkRateLimit(`contact:${ip}`, 5, FIFTEEN_MINUTES)) {
+    const allowed = await checkRateLimit(`contact:${ip}`, 5, FIFTEEN_MINUTES);
+    if (!allowed) {
       return NextResponse.json(
         { error: "Trop de soumissions. Réessayez dans quelques minutes." },
         { status: 429 }
       );
     }
+
     const body = await request.json().catch(() => null);
 
     if (!body || typeof body !== "object") {

@@ -1,28 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPasswordResetToken } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(key: string, max: number, windowMs: number): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-  if (entry.count >= max) return false;
-  entry.count++;
-  return true;
-}
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
-    const FIFTEEN_MINUTES = 15 * 60 * 1000;
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || request.headers.get("x-real-ip") || "unknown";
 
     // Rate limit by IP: max 10 requests per 15 minutes
-    if (!checkRateLimit(`ip:${ip}`, 10, FIFTEEN_MINUTES)) {
+    const ipAllowed = await checkRateLimit(`reset-ip:${ip}`, 10, FIFTEEN_MINUTES);
+    if (!ipAllowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
         { status: 429 }
@@ -39,7 +28,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limit by email: max 3 requests per 15 minutes
-    if (!checkRateLimit(`email:${email}`, 3, FIFTEEN_MINUTES)) {
+    const emailAllowed = await checkRateLimit(`reset-email:${email}`, 3, FIFTEEN_MINUTES);
+    if (!emailAllowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
         { status: 429 }
@@ -50,7 +40,6 @@ export async function POST(request: NextRequest) {
 
     // Always return success to avoid email enumeration
     if (token) {
-      // Use a hardcoded trusted base URL to prevent Host header injection
       const trustedBase = process.env.SITE_URL || request.headers.get("origin") || "";
       if (!trustedBase) {
         console.error("SITE_URL not set and no Origin header");

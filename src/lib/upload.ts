@@ -71,7 +71,22 @@ export async function saveFile(file: File): Promise<{ filename: string; filepath
 }
 
 export async function deleteFile(filepath: string): Promise<void> {
-  const fullPath = path.join(process.cwd(), "public", filepath);
+  // Validate filepath to prevent path traversal
+  const safePattern = /^\/uploads\/[a-f0-9]+\.\w+$/;
+  if (!safePattern.test(filepath) && !filepath.startsWith("/uploads/drone/")) {
+    console.error("Blocked unsafe file deletion attempt:", filepath);
+    return;
+  }
+
+  const fullPath = path.resolve(path.join(process.cwd(), "public", filepath));
+  const uploadsDir = path.resolve(path.join(process.cwd(), "public", "uploads"));
+
+  // Ensure resolved path is within uploads directory
+  if (!fullPath.startsWith(uploadsDir)) {
+    console.error("Path traversal blocked:", filepath);
+    return;
+  }
+
   try {
     await unlink(fullPath);
   } catch {

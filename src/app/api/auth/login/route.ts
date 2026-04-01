@@ -1,20 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdmin, createSession, setSessionCookie } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(key: string, max: number, windowMs: number): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-  if (entry.count >= max) return false;
-  entry.count++;
-  return true;
-}
+const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,8 +25,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limit by email: max 5 attempts per 15 minutes
-    const FIFTEEN_MINUTES = 15 * 60 * 1000;
-    if (!checkRateLimit(`login:${email}`, 5, FIFTEEN_MINUTES)) {
+    const allowed = await checkRateLimit(`login:${email}`, 5, FIFTEEN_MINUTES);
+    if (!allowed) {
       return NextResponse.json(
         { error: "Trop de tentatives. Réessayez dans quelques minutes." },
         { status: 429 }
@@ -53,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
     logAudit({
       adminId,
       adminEmail: email,

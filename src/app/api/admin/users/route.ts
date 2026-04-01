@@ -7,8 +7,11 @@ import { validatePassword } from "@/lib/password-validation";
 import { logAudit } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {
-  const { error: authError } = await requireAuth(request);
+  const { error: authError, admin } = await requireAuth(request);
   if (authError) return authError;
+
+  const roleError = requireRole(admin!, canManageUsers);
+  if (roleError) return roleError;
 
   const admins = await prisma.admin.findMany({
     select: { id: true, email: true, name: true, role: true, createdAt: true },

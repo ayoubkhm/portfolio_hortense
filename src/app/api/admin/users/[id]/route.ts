@@ -32,6 +32,11 @@ export async function PATCH(
     if (!validRoles.includes(role)) {
       return NextResponse.json({ error: "Rôle invalide." }, { status: 400 });
     }
+    // Cannot demote another proprietaire
+    if (target.role === "proprietaire" && role !== "proprietaire" && id !== admin!.id) {
+      return NextResponse.json({ error: "Impossible de rétrograder un autre propriétaire." }, { status: 403 });
+    }
+    // Cannot promote yourself (already proprietaire if you're here)
     updateData.role = role;
   }
   if (password) {
@@ -72,6 +77,11 @@ export async function DELETE(
   if (roleError) return roleError;
 
   const { id } = await params;
+
+  // Cannot delete your own account
+  if (id === admin!.id) {
+    return NextResponse.json({ error: "Impossible de supprimer votre propre compte." }, { status: 400 });
+  }
 
   const count = await prisma.admin.count();
   if (count <= 1) {
