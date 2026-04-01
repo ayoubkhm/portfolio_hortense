@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdmin, createSession, setSessionCookie } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -51,6 +52,16 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    logAudit({
+      adminId,
+      adminEmail: email,
+      action: "LOGIN",
+      resource: "auth",
+      details: email,
+      ipAddress: ip,
+    });
 
     const token = await createSession(adminId);
     const cookie = setSessionCookie(token);

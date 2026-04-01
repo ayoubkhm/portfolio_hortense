@@ -48,6 +48,16 @@ export async function PATCH(
     select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
 
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  logAudit({
+    adminId: admin!.id,
+    adminEmail: admin!.email,
+    action: "UPDATE_USER",
+    resource: "admin",
+    details: id,
+    ipAddress: ip,
+  });
+
   return NextResponse.json({ admin: updated });
 }
 
@@ -69,5 +79,16 @@ export async function DELETE(
   }
 
   await prisma.admin.delete({ where: { id } });
+
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  logAudit({
+    adminId: admin!.id,
+    adminEmail: admin!.email,
+    action: "DELETE_USER",
+    resource: "admin",
+    details: id,
+    ipAddress: ip,
+  });
+
   return NextResponse.json({ success: true });
 }

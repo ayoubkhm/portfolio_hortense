@@ -50,11 +50,14 @@ export async function POST(request: NextRequest) {
 
     // Always return success to avoid email enumeration
     if (token) {
-      const baseUrl = request.headers.get("origin") || request.headers.get("host") || "";
-      const protocol = baseUrl.startsWith("http") ? "" : "https://";
-      const resetUrl = `${protocol}${baseUrl}/admin/reset-password?token=${token}`;
-
-      await sendPasswordResetEmail(email, resetUrl);
+      // Use a hardcoded trusted base URL to prevent Host header injection
+      const trustedBase = process.env.SITE_URL || request.headers.get("origin") || "";
+      if (!trustedBase) {
+        console.error("SITE_URL not set and no Origin header");
+      } else {
+        const resetUrl = `${trustedBase}/admin/reset-password?token=${token}`;
+        await sendPasswordResetEmail(email, resetUrl);
+      }
     }
 
     return NextResponse.json({
