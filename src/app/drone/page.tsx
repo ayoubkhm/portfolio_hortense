@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PageHero from "@/components/sections/PageHero";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import CTASection from "@/components/sections/CTASection";
 import DroneGallery from "./DroneGallery";
 import Link from "next/link";
@@ -9,9 +10,9 @@ import { STEP_VISUALS } from "./step-visuals";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Prises de Vue Drone | Hortense de Ruidiaz",
+  title: "Opératrice Drone Certifiée CATS — Bordeaux",
   description:
-    "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier et événements — pilote certifiée CATS, images en haute définition.",
+    "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
 };
 
 export default async function DronePage() {
@@ -19,14 +20,52 @@ export default async function DronePage() {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Prises de Vue Drone",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": "Hortense de Ruidiaz",
-    },
-    "areaServed": "Bordeaux, Nouvelle-Aquitaine",
-    "description": "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier et événements.",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://hortensederuidiaz.com" },
+          { "@type": "ListItem", "position": 2, "name": "Drone", "item": "https://hortensederuidiaz.com/drone" },
+        ],
+      },
+      {
+        "@type": "Service",
+        "name": "Prises de Vue Drone",
+        "serviceType": "Drone Photography & Videography",
+        "provider": { "@id": "https://hortensederuidiaz.com/#localbusiness" },
+        "areaServed": { "@type": "City", "name": "Bordeaux" },
+        "description": "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier et événements.",
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Combien coûte une prestation drone ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Photo drone à partir de 100 \u20ac, vidéo drone à partir de 200 \u20ac. Suivi de chantier sur devis.",
+            },
+          },
+          {
+            "@type": "Question",
+            "name": "Êtes-vous certifiée pour piloter un drone ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oui, je suis titulaire du CATS (Certificat d\u2019Aptitude Théorique de Télépilote).",
+            },
+          },
+          {
+            "@type": "Question",
+            "name": "Dans quels domaines intervenez-vous ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Immobilier, architecture, suivi de chantier, événements sportifs et culturels.",
+            },
+          },
+        ],
+      },
+    ],
   };
 
   return (
@@ -40,6 +79,7 @@ export default async function DronePage() {
         subtitle={content.heroSubtitle}
         backgroundImage={content.heroBackgroundImage}
       />
+      <Breadcrumbs items={[{ label: "Drone" }]} />
 
       {/* Description */}
       <section className="pt-12 pb-20 px-4">
@@ -123,6 +163,49 @@ export default async function DronePage() {
             >
               Demander un devis
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-12">
+            Questions fréquentes
+          </h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: "Combien coûte une prestation drone à Bordeaux ?",
+                a: "Photo drone à partir de 100 €, vidéo drone à partir de 200 €. Le suivi de chantier est sur devis, adapté à la fréquence et à la durée du projet."
+              },
+              {
+                q: "Êtes-vous certifiée pour piloter un drone ?",
+                a: "Oui, je suis titulaire du CATS (Certificat d\u2019Aptitude Théorique de Télépilote de drone). Chaque mission est réalisée dans le respect de la réglementation aérienne en vigueur."
+              },
+              {
+                q: "Dans quels domaines intervenez-vous ?",
+                a: "J\u2019interviens pour l\u2019immobilier, l\u2019architecture, le suivi de chantier, les événements sportifs et culturels, ainsi que pour des besoins spécifiques comme l\u2019observation ou l\u2019analyse aérienne."
+              },
+              {
+                q: "Quel est le délai de livraison ?",
+                a: "Les fichiers numériques sont livrés sous 48h à 2 semaines selon la complexité de la prestation. Pour le suivi de chantier, les rapports visuels sont livrés après chaque survol."
+              },
+              {
+                q: "Intervenez-vous en dehors de Bordeaux ?",
+                a: "Oui, je me déplace dans toute la Gironde et la Nouvelle-Aquitaine. Les frais de déplacement sont inclus dans un rayon de 50 km autour de Bordeaux."
+              },
+            ].map((faq, i) => (
+              <details key={i} className="group rounded-xl border border-sand bg-white">
+                <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-charcoal font-medium">
+                  {faq.q}
+                  <svg className="h-5 w-5 shrink-0 text-warmgray transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </summary>
+                <p className="px-6 pb-4 text-warmgray leading-relaxed">{faq.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>

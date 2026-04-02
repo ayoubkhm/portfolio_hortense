@@ -19,16 +19,31 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Hortense de Ruidiaz | Photographe & Opératrice Drone — Bordeaux",
-    template: "%s | Hortense de Ruidiaz",
+    default: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
+    template: "%s — Hortense de Ruidiaz",
   },
   description:
-    "Photographe de mariage et opératrice drone à Bordeaux. Capturer vos plus beaux moments avec authenticité et créativité.",
+    "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
   metadataBase: new URL("https://hortensederuidiaz.com"),
   openGraph: {
     type: "website",
     locale: "fr_FR",
     siteName: "Hortense de Ruidiaz",
+    title: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
+    description:
+      "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes.",
+    url: "https://hortensederuidiaz.com",
+    images: [
+      {
+        url: "https://hortensederuidiaz.com/uploads/hortense-portrait.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Hortense de Ruidiaz — Photographe & Drone Bordeaux",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

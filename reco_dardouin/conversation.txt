@@ -1,0 +1,73 @@
+[02/04/2026 18:02:42] YoubiBoubi: Bon t’as des photos à changer
+[02/04/2026 18:02:44] Maxime  Dardouin: Bon déjà t'as des métadonnée mdr
+[02/04/2026 18:03:10] YoubiBoubi: Oui c’est toi qui m’a dit que c’était important une fois
+[02/04/2026 18:03:18] Maxime  Dardouin: C'est très très important
+[02/04/2026 18:03:29] Maxime  Dardouin: C'est ce qu'on voit quand on fait une recherche Google
+[02/04/2026 18:03:39] Maxime  Dardouin: On met le.metier avant le nom généralement
+[02/04/2026 18:03:47] Maxime  Dardouin: À part si on est très connu
+[02/04/2026 18:03:58] YoubiBoubi: Tkt Moumi elle est connue chez nous lol
+[02/04/2026 18:03:59] Maxime  Dardouin: Pour les pages services pareil
+[02/04/2026 18:04:08] YoubiBoubi: Je m’en occuperais
+[02/04/2026 18:04:17] YoubiBoubi: Les pages services ?
+[02/04/2026 18:06:22] Maxime  Dardouin: C'est pas foufou mais pas dégueux non plus, pblm de ton de voix par contre
+[02/04/2026 18:06:32] Maxime  Dardouin: Oui genre mariage/drone
+[02/04/2026 18:07:06] Maxime  Dardouin: Normalement tu essaies de créer une page pour chaque service et être spécifique si il y a matière à
+[02/04/2026 18:07:18] Maxime  Dardouin: Il faut une page à propos c'est très important
+[02/04/2026 18:07:21] YoubiBoubi: Okay méga chaud de prendre en compte tous tes points
+[02/04/2026 18:08:35] Maxime  Dardouin: Bon je t'envoie ça
+[02/04/2026 18:08:38] Maxime  Dardouin: c'est confidentiel
+[02/04/2026 18:08:45] Maxime  Dardouin: c'est que pour toi hein ^^
+[02/04/2026 18:08:50] YoubiBoubi: Donc si je comprends bien :
+•⁠  ⁠Il faut de la méta donnée pour les pages mariage et drone
+•⁠  ⁠⁠Il faut une page À propos
+•⁠  ⁠⁠Pblm de ton voix, c’est à dire le texte genre ?
+[02/04/2026 18:08:56] Maxime  Dardouin: c'est la bible que je me suis construite
+[02/04/2026 18:09:18] YoubiBoubi: Okay c’est de la bonne docu ça !
+[02/04/2026 18:09:27] YoubiBoubi: Merci Dardouch
+[02/04/2026 18:09:45] Maxime  Dardouin: Injectes ça dans Claude et explique ton projet tu dis que tu veux P1 voir P2 si très important sur les priorités
+[02/04/2026 18:09:53] Maxime  Dardouin: Lis le glossaire juste tu comprendras mieux
+[02/04/2026 18:10:02] Maxime  Dardouin: spécifies que c'ets pour référencement local
+[02/04/2026 18:10:30] Maxime  Dardouin: ton Claude il sera calibré il devra pouvoir faire tout le reste
+[02/04/2026 18:10:39] Maxime  Dardouin: (en tout cas sur la visibilité)
+[02/04/2026 18:10:45] YoubiBoubi: ça paaaart
+[02/04/2026 18:11:00] Maxime  Dardouin: métadonnées c'est toutes les pages
+[02/04/2026 18:11:14] Maxime  Dardouin: à propose c'est pour l'EEAT
+[02/04/2026 18:11:36] Maxime  Dardouin: il faut que ce soit une page qui place l'entrreprise, l'expertise etc, google et les ia comprenne qui t'es et sont rassurés
+[02/04/2026 18:11:52] Maxime  Dardouin: le ton de voix est très enfantin quand hortense se présente
+[02/04/2026 18:12:07] Maxime  Dardouin: c'est plus carré à d'autres endroits
+[02/04/2026 18:12:15] Maxime  Dardouin: à voir selon son positionnement
+[02/04/2026 18:12:23] YoubiBoubi: Le « Moi, c’est Hortense » je suppose haha
+[02/04/2026 18:12:29] Maxime  Dardouin: mais conducteur de drone vaut mieux faire serieux
+[02/04/2026 18:12:37] Maxime  Dardouin: oauis et le ton de voix général
+[02/04/2026 18:13:03] Maxime  Dardouin: "je me déplace sur toute la Gironde mais pas que… Je me rends disponible là où l'on a besoin de moi."
+[02/04/2026 18:13:24] YoubiBoubi: Ouais je capte
+[02/04/2026 18:13:45] Maxime  Dardouin: le référencement local c'est presque le plus complexe
+[02/04/2026 18:13:55] Maxime  Dardouin: enfin quoi que
+[02/04/2026 18:14:11] Maxime  Dardouin: mais juste c'est complexe si tu veu être bien référencé localement et pas juste avoir un site vitrine
+[02/04/2026 18:14:31] YoubiBoubi: Ok je prends note
+[02/04/2026 18:14:52] Maxime  Dardouin: moi ce qui me fait peur c'est ue y'a peut etre des choses que les CMS facilitent et sont bien pour la technique et la sécurité
+[02/04/2026 18:15:10] Maxime  Dardouin: pour le référencement tu as mes guides dont tu devrais pas avoir de pblm
+[02/04/2026 18:15:22] Maxime  Dardouin: mais genre l'indexation tout ça
+[02/04/2026 18:15:45] Maxime  Dardouin: Google doit faire un tri à la base et juger les sites j'imagine sur leurs structures
+[02/04/2026 18:16:02] YoubiBoubi: Côté Sécu tkt pas, je vais m’en sortir. Côté Tech c’est à voir encore
+[02/04/2026 18:16:42] Maxime  Dardouin: oublies pas les priorités sinon ça va être overkill, point d'attention sur les vidéos aussi, c'est très important, faut linker au youtube
+[02/04/2026 18:16:58] Maxime  Dardouin: et faut des pages dédiéés il me semble pour juste foutre de la métadonnée
+[02/04/2026 18:17:05] Maxime  Dardouin: pour chaque vidéo
+[02/04/2026 18:17:50] Maxime  Dardouin: mais bon là dans mes guides t'as surtout le on site, c'est moins poussé pour le offsite
+[02/04/2026 18:18:15] YoubiBoubi: okay je savais pas ! Je vais regarder ça aussi
+[02/04/2026 18:18:28] Maxime  Dardouin: après voilà c'est très overkill
+[02/04/2026 18:19:20] Maxime  Dardouin: le plus important va etre la strcture interne, métadonnées, clusters sémantiques, pages services localisées.. attention aussi à la cannibalisation
+[02/04/2026 18:19:32] Maxime  Dardouin: après t'as la recherche mot clé aussi, mai ça c'est autre chose
+[02/04/2026 18:23:51] Maxime  Dardouin: faut que tu regardes aussi comment on indexe le site, et mettre rgpd et autres pages légales, faut le tracking et connecter à la google search console
+[02/04/2026 18:25:36] Maxime  Dardouin: et penser à être une vitrine aussi pour la conversion, faut vraiment claquer à la gueule avec les visuels, pas besoin de voir hortense en deuxieme section de la homepage, témoignagnes clients hyper importants aussi x100000
+[02/04/2026 18:26:12] Maxime  Dardouin: element de reassurances aussi : déplacements, certifications, experiences...
+[02/04/2026 18:26:36] Maxime  Dardouin: témoignages + réassurance = le plus important après le produit (vidéo/photos)
+[02/04/2026 18:29:35] YoubiBoubi: Oh purée
+[02/04/2026 18:29:48] YoubiBoubi: Ça en fait du taff
+[02/04/2026 18:35:35] Maxime  Dardouin: Ouais tu t'es lancé dans un sacré truc
+[02/04/2026 18:36:19] Maxime  Dardouin: Mais bon la c'est un taff qui a une énorme valeur, si tu te limites à PO ça sera beaucoup plus léger
+[02/04/2026 18:36:41] Maxime  Dardouin: Mais vu que c'est direct branché à Claude ton site je me demande ce que ça peut donner si tu pousses
+[02/04/2026 18:36:54] Maxime  Dardouin: J'espère que t'as des tokens encore 🤣
+[02/04/2026 18:37:39] Maxime  Dardouin: Dis toi que moi je suis en train d'automatiser entre autre tout ça et c'est juste 15% du taff que je fais
+[02/04/2026 18:37:54] Maxime  Dardouin: Me reste plus qu'à trouver des clients derrière mais la valeur est monstre
+[02/04/2026 20:08:30] YoubiBoubi: Bah ouais je peux comprendre !

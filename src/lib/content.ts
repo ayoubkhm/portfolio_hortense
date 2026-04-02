@@ -110,7 +110,7 @@ export const MARIAGE_DEFAULTS: MariageContent = {
   heroSubtitle: "Des souvenirs qui traversent le temps",
   heroBackgroundImage: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80",
   descriptionParagraphs: [
-    "Je vous accompagne pour capturer les moments forts de votre mariage avec naturel et spontanéité.",
+    "Photographe de mariage à Bordeaux, je réalise des reportages photo et vidéo complets de votre journée, de la cérémonie à la soirée. Tarifs à partir de 1 100 €, avec séance couple et galerie privée en ligne incluses.",
     "Mon approche est discrète, afin de saisir des instants authentiques sans intervenir dans le déroulé de votre journée.",
     "J'accorde une attention particulière aux émotions, aux détails et à l'ambiance, pour vous livrer des images sincères et intemporelles.",
     "Chaque mariage est unique, c'est pourquoi je m'adapte à vos envies pour créer un reportage qui vous ressemble.",
@@ -182,7 +182,7 @@ export const DRONE_DEFAULTS: DroneContent = {
   heroSubtitle: "Des perspectives uniques vues du ciel",
   heroBackgroundImage: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1920&q=80",
   descriptionParagraphs: [
-    "Je propose des prestations de prises de vues aériennes par drone pour les professionnels et les projets techniques.",
+    "Opératrice drone certifiée CATS à Bordeaux, je réalise des prises de vues aériennes professionnelles pour l'immobilier, l'architecture, le suivi de chantier et les événements. Photo drone dès 100 €, vidéo dès 200 €.",
     "Mes services s'adressent notamment aux secteurs de l'immobilier, de l'architecture et du suivi de chantier, ainsi qu'à des usages spécifiques comme l'analyse ou l'observation (ex : activités sportives, courses hippiques).",
     "Chaque prestation est adaptée à vos besoins : mise en valeur d'un bien, suivi d'évolution, captation d'images précises ou création de contenus visuels.",
     "Sérieuse et réactive, je veille à fournir des images exploitables rapidement, dans le respect des contraintes techniques et réglementaires.",

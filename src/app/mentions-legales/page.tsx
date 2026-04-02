@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Breadcrumbs from '@/components/layout/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: 'Mentions Légales | Hortense de Ruidiaz',
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 export default function MentionsLegalesPage() {
   return (
     <main className="min-h-screen bg-cream">
+      <Breadcrumbs items={[{ label: "Mentions légales" }]} />
       <section className="bg-sand/40 py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h1 className="font-serif text-4xl font-bold tracking-tight text-charcoal md:text-5xl">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/sections/PageHero";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import ContactForm from "@/components/contact/ContactForm";
 import { getContent, CONTACT_DEFAULTS, ContactContent } from "@/lib/content";
@@ -7,20 +8,47 @@ import { getContent, CONTACT_DEFAULTS, ContactContent } from "@/lib/content";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Contact | Hortense de Ruidiaz",
-  description: "Contactez Hortense de Ruidiaz pour votre projet photo ou vidéo. Mariage, drone, et bien plus à Bordeaux et en Nouvelle-Aquitaine.",
+  title: "Contact — Devis Gratuit Photo & Drone",
+  description:
+    "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
 };
 
 export default async function ContactPage() {
   const content = await getContent<ContactContent>("content_contact", CONTACT_DEFAULTS);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://hortensederuidiaz.com" },
+          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://hortensederuidiaz.com/contact" },
+        ],
+      },
+      {
+        "@type": "ContactPage",
+        "name": "Contact — Hortense de Ruidiaz",
+        "url": "https://hortensederuidiaz.com/contact",
+        "description": "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux.",
+        "isPartOf": { "@id": "https://hortensederuidiaz.com/#website" },
+        "about": { "@id": "https://hortensederuidiaz.com/#organization" },
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <PageHero
         title={content.heroTitle}
         subtitle={content.heroSubtitle}
         backgroundImage={content.heroBackgroundImage}
       />
+      <Breadcrumbs items={[{ label: "Contact" }]} />
 
       <section className="bg-cream py-20">
         <div className="mx-auto max-w-6xl px-6">

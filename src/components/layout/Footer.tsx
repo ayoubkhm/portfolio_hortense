@@ -7,6 +7,7 @@ const footerLinks = [
   { href: "/mariage", label: "Mariage" },
   { href: "/drone", label: "Drone" },
   { href: "/contact", label: "Contact" },
+  { href: "/a-propos", label: "À propos" },
   { href: "/mentions-legales", label: "Mentions légales" },
 ];
 
