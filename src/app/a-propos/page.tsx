@@ -23,6 +23,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 const stats = [
@@ -242,6 +245,26 @@ export default function AProposPage() {
                 </div>
               ))}
             </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Testimonials CTA */}
+      <section className="py-16 px-4 bg-cream">
+        <div className="max-w-3xl mx-auto text-center">
+          <AnimatedSection>
+            <h2 className="font-serif text-3xl md:text-4xl text-charcoal mb-4">
+              Ce que disent nos clients
+            </h2>
+            <p className="text-warmgray leading-relaxed mb-8">
+              Couples, agences immobilières, professionnels du BTP&nbsp;— découvrez les retours de ceux qui ont fait confiance à Hortense pour leurs projets photo et drone.
+            </p>
+            <Link
+              href="/#temoignages"
+              className="inline-block bg-gold text-white px-8 py-3 rounded-full font-medium hover:bg-gold/90 transition-colors text-sm uppercase tracking-wide"
+            >
+              Lire les témoignages
+            </Link>
           </AnimatedSection>
         </div>
       </section>

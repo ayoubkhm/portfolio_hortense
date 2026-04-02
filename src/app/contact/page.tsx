@@ -11,6 +11,15 @@ export const metadata: Metadata = {
   title: "Contact — Devis Gratuit Photo & Drone",
   description:
     "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
+  openGraph: {
+    title: "Contact — Devis Gratuit Photo & Drone",
+    description:
+      "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
+    url: "https://hortensederuidiaz.com/contact",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default async function ContactPage() {

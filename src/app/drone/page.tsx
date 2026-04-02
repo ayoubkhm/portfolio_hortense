@@ -13,6 +13,23 @@ export const metadata: Metadata = {
   title: "Opératrice Drone Certifiée CATS — Bordeaux",
   description:
     "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
+  openGraph: {
+    title: "Opératrice Drone Certifiée CATS — Bordeaux",
+    description:
+      "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
+    url: "https://hortensederuidiaz.com/drone",
+    images: [
+      {
+        url: "https://hortensederuidiaz.com/uploads/hortense-portrait.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Opératrice drone Bordeaux — Hortense de Ruidiaz",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default async function DronePage() {

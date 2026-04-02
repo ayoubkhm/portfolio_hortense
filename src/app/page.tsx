@@ -102,16 +102,16 @@ export default async function Home() {
         subtitle={content.heroSubtitle}
         subSubtitle={content.heroSubSubtitle}
       />
-      <AboutSection
-        heading={content.aboutHeading}
-        paragraphs={content.aboutParagraphs}
-        portraitImage={content.aboutPortraitImage}
-      />
       <ServicesPreview
         heading={content.servicesHeading}
         services={services}
       />
       <TestimonialsSection />
+      <AboutSection
+        heading={content.aboutHeading}
+        paragraphs={content.aboutParagraphs}
+        portraitImage={content.aboutPortraitImage}
+      />
     </main>
   );
 }

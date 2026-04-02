@@ -9,10 +9,12 @@ const footerLinks = [
   { href: "/contact", label: "Contact" },
   { href: "/a-propos", label: "À propos" },
   { href: "/mentions-legales", label: "Mentions légales" },
+  { href: "/politique-confidentialite", label: "Politique de confidentialité" },
 ];
 
 export default function Footer() {
   const [email, setEmail] = useState("contact@hortensederuidiaz.com");
+  const [phone, setPhone] = useState("06 16 28 22 70");
   const [location, setLocation] = useState("Bordeaux, France");
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function Footer() {
       .then((res) => res.json())
       .then((data) => {
         if (data.email) setEmail(data.email);
+        if (data.phone) setPhone(data.phone);
         if (data.location) setLocation(data.location);
       })
       .catch(() => {});
@@ -47,6 +50,9 @@ export default function Footer() {
 
           <div className="text-center text-sm text-sand/70 md:text-right">
             <p>{location}</p>
+            <a href={`tel:+33${phone.replace(/\s/g, "").replace(/^0/, "")}`} className="transition-colors hover:text-gold">
+              {phone}
+            </a>
             <a href={`mailto:${email}`} className="transition-colors hover:text-gold">
               {email}
             </a>

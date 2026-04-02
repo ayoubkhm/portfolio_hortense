@@ -92,6 +92,15 @@ export default async function MariagePage() {
           },
         ],
       },
+      ...content.videoEmbeds.map((video, i) => ({
+        "@type": "VideoObject",
+        "name": video.title || `Vidéo mariage ${i + 1}`,
+        "description": "Reportage vidéo de mariage par Hortense de Ruidiaz, photographe à Bordeaux",
+        "thumbnailUrl": `https://img.youtube.com/vi/${video.src.includes('youtube') ? video.src.split('/').pop() : ''}/maxresdefault.jpg`,
+        "uploadDate": "2026-01-01",
+        "contentUrl": video.src.replace('/embed/', '/watch?v=').replace('player.vimeo.com/video/', 'vimeo.com/'),
+        "embedUrl": video.src,
+      })),
     ],
   };
 

@@ -5,27 +5,33 @@ import AnimatedSection from "@/components/ui/AnimatedSection";
 const testimonials = [
   {
     quote:
-      "Hortense a su capturer chaque émotion de notre mariage avec une sensibilité rare. Les photos sont magnifiques, naturelles et pleines de vie.",
-    author: "Marie & Thomas",
-    detail: "Mariage 2025",
+      "Hortense a su capturer chaque moment de notre mariage avec une sensibilité incroyable. Des préparatifs jusqu'à la soirée, elle s'est faite discrète tout en ne ratant aucun instant. Les photos sont naturelles, lumineuses et pleines d'émotion. On les regarde encore régulièrement !",
+    author: "Camille & Julien",
+    detail: "Mariage à Saint-Émilion, 2025",
   },
   {
     quote:
-      "Un travail de drone exceptionnel pour notre projet immobilier. Images nettes, livrées rapidement. Très professionnelle.",
-    author: "Agence Immobilière Bordeaux",
-    detail: "",
+      "On hésitait à prendre la vidéo en plus de la photo, et on ne regrette absolument pas. Le film de notre mariage nous replonge à chaque visionnage dans l'ambiance de cette journée. Hortense a un vrai sens du storytelling.",
+    author: "Laura & Maxime",
+    detail: "Mariage au Château de la Rivière, 2025",
   },
   {
     quote:
-      "De la préparation à la soirée, Hortense a été discrète et attentive. Le résultat dépasse nos attentes.",
-    author: "Sophie & Alexandre",
-    detail: "Mariage 2024",
+      "Nous avons fait appel à Hortense pour des photos aériennes de plusieurs biens en vente. Résultat impeccable, images livrées en 48h, et un vrai plus pour nos annonces. Nous recommandons sans hésiter.",
+    author: "Thomas B.",
+    detail: "Directeur d'agence immobilière, Bordeaux",
+  },
+  {
+    quote:
+      "Le suivi de chantier par drone nous permet de documenter l'avancement de nos projets de manière professionnelle. Hortense est réactive, ponctuelle et ses images sont toujours exploitables immédiatement.",
+    author: "Marie-Claire D.",
+    detail: "Responsable de projets BTP, Mérignac",
   },
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-20 px-4 bg-sand">
+    <section id="temoignages" className="py-20 px-4 bg-sand">
       <div className="max-w-6xl mx-auto">
         <AnimatedSection>
           <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-4">
@@ -36,7 +42,7 @@ export default function TestimonialsSection() {
           </p>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((t, i) => (
             <AnimatedSection key={i}>
               <div className="bg-cream rounded-2xl p-8 shadow-sm h-full flex flex-col">
@@ -50,7 +56,7 @@ export default function TestimonialsSection() {
                 </svg>
 
                 {/* Quote text */}
-                <blockquote className="text-warmgray leading-relaxed flex-grow mb-6">
+                <blockquote className="text-warmgray italic leading-relaxed flex-grow mb-6">
                   &ldquo;{t.quote}&rdquo;
                 </blockquote>
 
