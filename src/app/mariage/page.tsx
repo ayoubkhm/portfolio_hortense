@@ -35,7 +35,17 @@ export default async function MariagePage() {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebPage",
+        "@id": "https://hortensederuidiaz.com/mariage#webpage",
+        "url": "https://hortensederuidiaz.com/mariage",
+        "name": "Photographe Mariage Bordeaux",
+        "isPartOf": { "@id": "https://hortensederuidiaz.com/#website" },
+        "datePublished": "2026-03-26",
+        "dateModified": "2026-04-02",
+      },
+      {
         "@type": "BreadcrumbList",
+        "@id": "https://hortensederuidiaz.com/mariage#breadcrumb",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://hortensederuidiaz.com" },
           { "@type": "ListItem", "position": 2, "name": "Mariage", "item": "https://hortensederuidiaz.com/mariage" },
@@ -48,6 +58,7 @@ export default async function MariagePage() {
         "provider": { "@id": "https://hortensederuidiaz.com/#localbusiness" },
         "areaServed": { "@type": "City", "name": "Bordeaux" },
         "description": "Photographe de mariage à Bordeaux. Reportage photo et vidéo complet.",
+        "serviceOutput": "Photos retouchées haute qualité sur clé USB, galerie privée en ligne, album photo optionnel",
         "offers": [
           { "@type": "Offer", "name": "Photo Standard", "price": "1100", "priceCurrency": "EUR" },
           { "@type": "Offer", "name": "Photo Premium", "price": "1700", "priceCurrency": "EUR" },
@@ -97,7 +108,8 @@ export default async function MariagePage() {
         "name": video.title || `Vidéo mariage ${i + 1}`,
         "description": "Reportage vidéo de mariage par Hortense de Ruidiaz, photographe à Bordeaux",
         "thumbnailUrl": `https://img.youtube.com/vi/${video.src.includes('youtube') ? video.src.split('/').pop() : ''}/maxresdefault.jpg`,
-        "uploadDate": "2026-01-01",
+        "uploadDate": "2025-01-01",
+        "duration": "PT4M",
         "contentUrl": video.src.replace('/embed/', '/watch?v=').replace('player.vimeo.com/video/', 'vimeo.com/'),
         "embedUrl": video.src,
       })),
@@ -232,6 +244,35 @@ export default async function MariagePage() {
               </details>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Summary */}
+      <section className="py-12 px-4">
+        <div className="max-w-3xl mx-auto rounded-2xl bg-sand/30 border border-sand p-8">
+          <h2 className="font-serif text-2xl text-charcoal mb-4">Ce qu&apos;il faut retenir</h2>
+          <ul className="space-y-2 text-warmgray">
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Photographe mariage à Bordeaux — tarifs de 1 100 € à 2 100 €
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Formules photo et vidéo avec plan drone compris
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Photos retouchées sur clé USB + galerie privée en ligne
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Livraison sous 4 à 6 semaines
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Disponible dans toute la Nouvelle-Aquitaine et au-delà
+            </li>
+          </ul>
         </div>
       </section>
 

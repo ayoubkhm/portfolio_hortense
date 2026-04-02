@@ -58,6 +58,7 @@ export default function PricingCard({
       >
         Demander un devis
       </Link>
+      <p className="mt-2 text-xs text-warmgray text-center">Devis gratuit · Sans engagement</p>
     </div>
   );
 }

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
+  '@id': 'https://hortensederuidiaz.com/politique-confidentialite#breadcrumb',
   itemListElement: [
     {
       '@type': 'ListItem',

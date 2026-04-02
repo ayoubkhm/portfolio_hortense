@@ -30,6 +30,7 @@ export default async function ContactPage() {
     "@graph": [
       {
         "@type": "BreadcrumbList",
+        "@id": "https://hortensederuidiaz.com/contact#breadcrumb",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://hortensederuidiaz.com" },
           { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://hortensederuidiaz.com/contact" },
@@ -65,7 +66,7 @@ export default async function ContactPage() {
             <AnimatedSection>
               <div>
                 <h2 className="font-serif text-3xl text-charcoal mb-2">Envoyez-moi un message</h2>
-                <p className="text-warmgray mb-8">Remplissez le formulaire ci-dessous et je vous répondrai dans les plus brefs délais.</p>
+                <p className="text-warmgray mb-8">Remplissez le formulaire ci-dessous. Réponse garantie sous 24h, sans engagement.</p>
                 <ContactForm />
               </div>
             </AnimatedSection>

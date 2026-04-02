@@ -56,6 +56,7 @@ export default function AProposPage() {
     "@graph": [
       {
         "@type": "BreadcrumbList",
+        "@id": "https://hortensederuidiaz.com/a-propos#breadcrumb",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Accueil", item: "https://hortensederuidiaz.com" },
           { "@type": "ListItem", position: 2, name: "À propos", item: "https://hortensederuidiaz.com/a-propos" },
@@ -87,6 +88,7 @@ export default function AProposPage() {
           "@type": "EducationalOccupationalCredential",
           credentialCategory: "certificate",
           name: "CATS — Certificat d'Aptitude Théorique de Télépilote",
+          recognizedBy: { "@type": "Organization", name: "DGAC" },
         },
         worksFor: {
           "@id": "https://hortensederuidiaz.com/#organization",

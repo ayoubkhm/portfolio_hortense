@@ -39,7 +39,17 @@ export default async function DronePage() {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebPage",
+        "@id": "https://hortensederuidiaz.com/drone#webpage",
+        "url": "https://hortensederuidiaz.com/drone",
+        "name": "Opératrice Drone Certifiée CATS Bordeaux",
+        "isPartOf": { "@id": "https://hortensederuidiaz.com/#website" },
+        "datePublished": "2026-03-26",
+        "dateModified": "2026-04-02",
+      },
+      {
         "@type": "BreadcrumbList",
+        "@id": "https://hortensederuidiaz.com/drone#breadcrumb",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://hortensederuidiaz.com" },
           { "@type": "ListItem", "position": 2, "name": "Drone", "item": "https://hortensederuidiaz.com/drone" },
@@ -52,6 +62,19 @@ export default async function DronePage() {
         "provider": { "@id": "https://hortensederuidiaz.com/#localbusiness" },
         "areaServed": { "@type": "City", "name": "Bordeaux" },
         "description": "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier et événements.",
+        "serviceOutput": "Photos HD et vidéos 4K aériennes, fichiers numériques livrés sous 48h",
+      },
+      {
+        "@type": "HowTo",
+        "name": "Comment réserver une prestation drone à Bordeaux",
+        "description": "Les étapes pour réaliser une mission de prise de vue aérienne par drone avec Hortense de Ruidiaz.",
+        "step": [
+          { "@type": "HowToStep", "position": 1, "name": "Écoute de votre projet", "text": "Première étape pour définir une prestation adaptée à vos objectifs." },
+          { "@type": "HowToStep", "position": 2, "name": "Étude et devis personnalisé", "text": "Analyse des attentes, lieux, sécurité et contexte pour un devis sur mesure." },
+          { "@type": "HowToStep", "position": 3, "name": "Préparation de la mission", "text": "Météo, repérage, autorisations et sécurité pour garantir qualité et conformité." },
+          { "@type": "HowToStep", "position": 4, "name": "Réalisation et captation", "text": "Mission sur site avec captation photo et/ou vidéo aérienne professionnelle." },
+          { "@type": "HowToStep", "position": 5, "name": "Postproduction et livraison", "text": "Retouche et livraison des fichiers numériques ou produit fini." },
+        ],
       },
       {
         "@type": "FAQPage",
@@ -180,6 +203,7 @@ export default async function DronePage() {
             >
               Demander un devis
             </Link>
+            <p className="mt-3 text-sm text-warmgray">Devis gratuit · Réponse sous 24h</p>
           </div>
         </div>
       </section>
@@ -224,6 +248,35 @@ export default async function DronePage() {
               </details>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Summary */}
+      <section className="py-12 px-4">
+        <div className="max-w-3xl mx-auto rounded-2xl bg-sand/30 border border-sand p-8">
+          <h2 className="font-serif text-2xl text-charcoal mb-4">Ce qu&apos;il faut retenir</h2>
+          <ul className="space-y-2 text-warmgray">
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Pilote certifiée CATS — prises de vues aériennes professionnelles
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Photo drone dès 100 €, vidéo dès 200 €
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Immobilier, architecture, chantier, événements
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Livraison rapide sous 48h à 2 semaines
+            </li>
+            <li className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+              Bordeaux, Gironde et Nouvelle-Aquitaine
+            </li>
+          </ul>
         </div>
       </section>
 

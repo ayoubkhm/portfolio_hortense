@@ -32,6 +32,7 @@ export default function CTASection({
         >
           {buttonText}
         </Link>
+        <p className="mt-3 text-sm text-sand/70">Sans engagement · Réponse sous 24h</p>
       </div>
     </section>
   );

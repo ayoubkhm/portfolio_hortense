@@ -33,6 +33,7 @@ export default async function Home() {
         "description": "Photographe de mariage et opératrice drone certifiée CATS à Bordeaux",
         "email": "contact@hortensederuidiaz.com",
         "telephone": "+33616282270",
+        // TODO: Add Instagram and Facebook URLs to sameAs when real profile URLs are available
         "sameAs": ["https://www.linkedin.com/in/hortense-de-ruidiaz-a83266142/"],
         "founder": {
           "@type": "Person",
