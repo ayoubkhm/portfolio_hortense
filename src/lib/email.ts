@@ -13,7 +13,7 @@ function escapeHtml(text: string): string {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@hortensederuidiaz.com";
+const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@hortensederuidiaz.fr";
 
 interface ContactNotificationData {
   name: string;

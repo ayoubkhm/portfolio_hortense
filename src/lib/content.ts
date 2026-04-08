@@ -6,9 +6,6 @@ export interface HomepageContent {
   heroTitle: string;
   heroSubtitle: string;
   heroSubSubtitle: string;
-  aboutHeading: string;
-  aboutParagraphs: string[];
-  aboutPortraitImage: string;
   servicesHeading: string;
   services: {
     title: string;
@@ -35,6 +32,10 @@ export interface MariageContent {
     features: string[];
     highlighted?: boolean;
   }[];
+  faqHeading: string;
+  faq: { question: string; answer: string }[];
+  summaryHeading: string;
+  summaryItems: string[];
   ctaTitle: string;
   ctaSubtitle: string;
   ctaButtonText: string;
@@ -51,9 +52,69 @@ export interface DroneContent {
   processHeading: string;
   processSubtitle: string;
   processSteps: { title: string; description: string }[];
+  faqHeading: string;
+  faq: { question: string; answer: string }[];
+  summaryHeading: string;
+  summaryItems: string[];
   ctaTitle: string;
   ctaSubtitle: string;
   ctaButtonText: string;
+}
+
+export interface AProposContent {
+  heroTitle: string;
+  heroSubtitle: string;
+  heroBackgroundImage: string;
+  portraitImage: string;
+  bioHeading: string;
+  bioParagraphs: string[];
+  expertiseHeading: string;
+  expertiseMariage: { title: string; description: string };
+  expertiseDrone: { title: string; description: string };
+  certificationsHeading: string;
+  certifications: { title: string; description: string }[];
+  ctaTitle: string;
+  ctaSubtitle: string;
+  ctaButtonText: string;
+}
+
+export interface MariageGalleryImage {
+  // id is generated client-side on load if missing — needed by @dnd-kit
+  // sortable to track items across reorders.
+  id?: string;
+  src: string;
+  alt: string;
+}
+
+export interface MariageGalleryCategory {
+  id?: string;
+  title: string;
+  /** @deprecated Cover is now always the first image of the category.
+   *  Field kept for backwards compat with existing data; no longer read. */
+  cover?: string;
+  images: MariageGalleryImage[];
+}
+
+export interface MariageGalleryContent {
+  categories: MariageGalleryCategory[];
+}
+
+// ─── Drone gallery ───────────────────────────────────────────────────────────
+// Each drone item is a thumbnail (image) + an associated video. The thumbnail
+// is what shows in the public masonry grid; clicking opens a modal with the
+// video. Video is the goal but optional during the migration of existing photos
+// uploaded before this gallery system existed (those items get an empty video
+// string and show a "Vidéo bientôt disponible" placeholder until completed).
+export interface DroneGalleryItem {
+  id: string;
+  thumbnail: string;
+  /** Empty string = pas de vidéo encore (legacy import or in-progress) */
+  video: string;
+  alt: string;
+}
+
+export interface DroneGalleryContent {
+  items: DroneGalleryItem[];
 }
 
 export interface ContactContent {
@@ -75,15 +136,6 @@ export const HOMEPAGE_DEFAULTS: HomepageContent = {
   heroTitle: "Hortense de Ruidiaz",
   heroSubtitle: "Photographie et prises de vues aériennes par drone à Bordeaux",
   heroSubSubtitle: "Pour les professionnels et les particuliers",
-  aboutHeading: "À propos",
-  aboutParagraphs: [
-    "Moi, c'est Hortense. Passionnée par l'image et la nature, je réalise des prises de vues photo et vidéo, au sol comme par drone.",
-    "Basée à Bordeaux, je me déplace sur toute la Gironde mais pas que… Je me rends disponible là où l'on a besoin de moi.",
-    "J'accompagne aussi bien les particuliers que les professionnels dans leurs projets visuels : mariage, immobilier, architecture ou besoins techniques.",
-    "Mon approche est à la fois discrète, efficace et attentive aux détails, avec toujours l'objectif de produire des images naturelles, utiles et de qualité.",
-    "Que vous soyez un particulier ou une entreprise, mes prestations s'adaptent à vos besoins.",
-  ],
-  aboutPortraitImage: "/uploads/hortense-portrait.jpg",
   servicesHeading: "Mes Services",
   services: [
     {
@@ -171,6 +223,37 @@ export const MARIAGE_DEFAULTS: MariageContent = {
       highlighted: true,
     },
   ],
+  faqHeading: "Questions fréquentes",
+  faq: [
+    {
+      question: "Combien coûte un photographe de mariage à Bordeaux ?",
+      answer: "Les tarifs commencent à 1 100 € pour la formule Photo Standard (cérémonie au cocktail, séance couple, photos retouchées sur clé USB) et vont jusqu'à 2 100 € pour la formule Vidéo Premium (préparatifs à la soirée dansante, plan drone compris).",
+    },
+    {
+      question: "Quand recevrai-je mes photos de mariage ?",
+      answer: "Les photos triées et retouchées en haute qualité sont livrées sur clé USB sous 4 à 6 semaines après votre mariage. Une galerie privée en ligne est également mise à disposition pour vos invités.",
+    },
+    {
+      question: "Vous déplacez-vous en dehors de Bordeaux ?",
+      answer: "Oui, je me déplace dans toute la Nouvelle-Aquitaine et au-delà. Les frais de déplacement sont facturés dans leur totalité dès que la distance excède 50 kilomètres. Des frais d'hébergement peuvent s'appliquer au-delà de 2 heures de trajet.",
+    },
+    {
+      question: "Proposez-vous aussi la vidéo de mariage ?",
+      answer: "Oui, je propose des formules vidéo avec plan drone compris, de 1 600 € (Vidéo Standard, 3-5 min) à 2 100 € (Vidéo Premium, 6-7 min). La vidéo est livrée par téléchargement privé.",
+    },
+    {
+      question: "Comment se déroule un reportage mariage ?",
+      answer: "Je vous accompagne de manière discrète tout au long de la journée. Mon approche est naturelle et spontanée : je capture les émotions, les détails et l'ambiance sans intervenir dans le déroulé. Chaque reportage est unique et adapté à vos envies.",
+    },
+  ],
+  summaryHeading: "Ce qu'il faut retenir",
+  summaryItems: [
+    "Photographe mariage à Bordeaux — tarifs de 1 100 € à 2 100 €",
+    "Formules photo et vidéo avec plan drone compris",
+    "Photos retouchées sur clé USB + galerie privée en ligne",
+    "Livraison sous 4 à 6 semaines",
+    "Disponible dans toute la Nouvelle-Aquitaine et au-delà",
+  ],
   ctaTitle: "Racontez-moi votre histoire",
   ctaSubtitle: "Chaque mariage est unique. N'hésitez pas à me contacter pour en parler.",
   ctaButtonText: "Prendre contact",
@@ -213,8 +296,121 @@ export const DRONE_DEFAULTS: DroneContent = {
       description: "Nous vous livrons des fichiers numériques bruts ou un produit fini, prêt à l\u2019emploi, suite à différentes étapes de postproduction.",
     },
   ],
+  faqHeading: "Questions fréquentes",
+  faq: [
+    {
+      question: "Combien coûte une prestation drone à Bordeaux ?",
+      answer: "Photo drone à partir de 100 €, vidéo drone à partir de 200 €. Le suivi de chantier est sur devis, adapté à la fréquence et à la durée du projet.",
+    },
+    {
+      question: "Êtes-vous certifiée pour piloter un drone ?",
+      answer: "Oui, je suis titulaire du CATS (Certificat d'Aptitude Théorique de Télépilote de drone). Chaque mission est réalisée dans le respect de la réglementation aérienne en vigueur.",
+    },
+    {
+      question: "Dans quels domaines intervenez-vous ?",
+      answer: "J'interviens pour l'immobilier, l'architecture, le suivi de chantier, les événements sportifs et culturels, ainsi que pour des besoins spécifiques comme l'observation ou l'analyse aérienne.",
+    },
+    {
+      question: "Quel est le délai de livraison ?",
+      answer: "Les fichiers numériques sont livrés sous 48h à 2 semaines selon la complexité de la prestation. Pour le suivi de chantier, les rapports visuels sont livrés après chaque survol.",
+    },
+    {
+      question: "Intervenez-vous en dehors de Bordeaux ?",
+      answer: "Oui, je me déplace dans toute la Gironde et la Nouvelle-Aquitaine. Les frais de déplacement sont inclus dans un rayon de 50 km autour de Bordeaux.",
+    },
+  ],
+  summaryHeading: "Ce qu'il faut retenir",
+  summaryItems: [
+    "Pilote certifiée CATS — prises de vues aériennes professionnelles",
+    "Photo drone dès 100 €, vidéo dès 200 €",
+    "Immobilier, architecture, chantier, événements",
+    "Livraison rapide sous 48h à 2 semaines",
+    "Bordeaux, Gironde et Nouvelle-Aquitaine",
+  ],
   ctaTitle: "Un projet en vue ?",
   ctaSubtitle: "Contactez-moi pour discuter de votre projet et obtenir un devis personnalisé.",
+  ctaButtonText: "Me contacter",
+};
+
+export const MARIAGE_GALLERY_DEFAULTS: MariageGalleryContent = {
+  categories: [
+    {
+      title: "Préparatifs",
+      cover: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80",
+      images: [
+        { src: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80", alt: "Préparatifs mariée" },
+        { src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&q=80", alt: "Maquillage mariée" },
+        { src: "https://images.unsplash.com/photo-1595407753234-0882f1e77954?w=800&q=80", alt: "Robe de mariée" },
+      ],
+    },
+    {
+      title: "Photos de couple",
+      cover: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+      images: [
+        { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80", alt: "Couple mariage" },
+        { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80", alt: "Couple au coucher de soleil" },
+      ],
+    },
+    {
+      title: "Cérémonie",
+      cover: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
+      images: [
+        { src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80", alt: "Cérémonie mariage" },
+        { src: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=800&q=80", alt: "Allée cérémonie" },
+      ],
+    },
+    {
+      title: "Cocktail",
+      cover: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80",
+      images: [
+        { src: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80", alt: "Cocktail mariage" },
+        { src: "https://images.unsplash.com/photo-1470338745628-171cf53de3a8?w=800&q=80", alt: "Verres de champagne" },
+      ],
+    },
+  ],
+};
+
+export const DRONE_GALLERY_DEFAULTS: DroneGalleryContent = {
+  items: [],
+};
+
+export const APROPOS_DEFAULTS: AProposContent = {
+  heroTitle: "À propos",
+  heroSubtitle: "Photographe professionnelle & opératrice drone certifiée à Bordeaux",
+  heroBackgroundImage: "/uploads/hortense-portrait.jpg",
+  portraitImage: "/uploads/hortense-portrait.jpg",
+  bioHeading: "Hortense de Ruidiaz",
+  bioParagraphs: [
+    "Hortense de Ruidiaz est photographe professionnelle et opératrice drone certifiée, basée à Bordeaux. Passionnée par l'image et la lumière, elle accompagne chaque projet de photographie de mariage et de captation aérienne avec sensibilité et exigence.",
+    "Certifiée CATS (Certificat d'Aptitude Théorique de Télépilote), elle propose des prestations complètes alliant photographie au sol et vues aériennes par drone, offrant ainsi des perspectives uniques sur chaque événement ou projet.",
+    "Que ce soit pour un mariage, une collaboration immobilière ou un suivi de chantier, Hortense s'engage à livrer des images authentiques, soignées et fidèles à l'émotion du moment.",
+  ],
+  expertiseHeading: "Domaines d'expertise",
+  expertiseMariage: {
+    title: "Photographie de Mariage",
+    description: "Reportage photo et vidéo complet, des préparatifs à la soirée dansante. Un regard discret et attentif pour capturer chaque émotion de votre journée.",
+  },
+  expertiseDrone: {
+    title: "Captation Drone",
+    description: "Opératrice drone certifiée CATS pour des prises de vues aériennes professionnelles : immobilier, événementiel, tourisme et projets créatifs.",
+  },
+  certificationsHeading: "Certifications & Formation",
+  certifications: [
+    {
+      title: "CATS",
+      description: "Certificat d'Aptitude Théorique de Télépilote — autorisation officielle pour le pilotage de drone professionnel en France.",
+    },
+    {
+      title: "Formation audiovisuelle",
+      description: "Diplômée de l'ISA — Institut Supérieur d'Audiovisuel (2019-2021). Formation complète en photographie, vidéo et production audiovisuelle.",
+    },
+    {
+      title: "Assurance professionnelle",
+      description: "[Placeholder — préciser l'assurance RC Pro et drone]",
+    },
+  ],
+  ctaTitle: "Parlons de votre projet",
+  ctaSubtitle: "Mariage, drone ou autre projet photo — contactez-moi pour un devis gratuit et personnalisé.",
   ctaButtonText: "Me contacter",
 };
 
@@ -222,12 +418,12 @@ export const CONTACT_DEFAULTS: ContactContent = {
   heroTitle: "Contact",
   heroSubtitle: "Parlons de votre projet",
   heroBackgroundImage: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=80",
-  email: "contact@hortensederuidiaz.com",
+  email: "contact@hortensederuidiaz.fr",
   phone: "06 16 28 22 70",
   location: "Bordeaux, France",
   availabilityText: "Disponible dans toute la Nouvelle-Aquitaine et au-delà pour vos projets.",
-  instagramUrl: "https://instagram.com",
-  facebookUrl: "https://facebook.com",
+  instagramUrl: "https://instagram.com/hortense.wedding.pic",
+  facebookUrl: "",
   linkedinUrl: "https://www.linkedin.com/in/hortense-de-ruidiaz-a83266142/",
 };
 
@@ -238,6 +434,8 @@ export const CONTENT_KEYS = [
   "content_mariage",
   "content_mariage_gallery",
   "content_drone",
+  "content_drone_gallery",
+  "content_apropos",
   "content_contact",
   "content_theme",
 ] as const;

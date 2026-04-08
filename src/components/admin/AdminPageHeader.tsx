@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 interface AdminPageHeaderProps {
   title: string;
   subtitle: string;
@@ -7,6 +9,12 @@ interface AdminPageHeaderProps {
   isSaving: boolean;
   onSave: () => void;
   onRevert: (() => void) | null; // null = no previous state to revert to
+  /**
+   * Optional extra action buttons rendered at the start of the action group
+   * (before Annuler / Aperçu / Sauvegarder). Use the same button styles for
+   * visual consistency — see the existing buttons below as templates.
+   */
+  extraActions?: ReactNode;
 }
 
 export default function AdminPageHeader({
@@ -16,6 +24,7 @@ export default function AdminPageHeader({
   isSaving,
   onSave,
   onRevert,
+  extraActions,
 }: AdminPageHeaderProps) {
   return (
     <div className="sticky top-0 z-30 bg-[#FAF7F2]/95 backdrop-blur-sm border-b border-[#E8E0D4] -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 mb-6">
@@ -25,6 +34,8 @@ export default function AdminPageHeader({
           <p className="text-sm text-[#6B6560] hidden sm:block">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {/* Optional extra actions injected by the parent page */}
+          {extraActions}
           {/* Revert button */}
           {onRevert && (
             <button

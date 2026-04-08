@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,7 +8,6 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState("");
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +28,7 @@ export default function LoginForm() {
         return;
       }
 
-      router.push("/admin/accueil");
+      window.location.href = "/admin/accueil";
     } catch {
       setError("Erreur de connexion au serveur.");
     } finally {

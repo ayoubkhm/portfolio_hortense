@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   description:
     "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
-  metadataBase: new URL("https://hortensederuidiaz.com"),
+  metadataBase: new URL("https://hortensederuidiaz.fr"),
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -32,10 +32,10 @@ export const metadata: Metadata = {
     title: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
     description:
       "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes.",
-    url: "https://hortensederuidiaz.com",
+    url: "https://hortensederuidiaz.fr",
     images: [
       {
-        url: "https://hortensederuidiaz.com/uploads/hortense-portrait.jpg",
+        url: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
         width: 1200,
         height: 630,
         alt: "Hortense de Ruidiaz — Photographe & Drone Bordeaux",
@@ -54,6 +54,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        <link rel="preconnect" href="https://www.youtube.com" />
+        <link rel="preconnect" href="https://player.vimeo.com" />
+      </head>
       <body
         className={`${playfair.variable} ${inter.variable} font-sans antialiased bg-cream text-charcoal`}
       >

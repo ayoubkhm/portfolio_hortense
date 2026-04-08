@@ -6,8 +6,14 @@ import Image from "next/image";
 interface DroneItem {
   src: string;
   alt: string;
-  category: string;
   video?: string;
+}
+
+interface DroneGalleryItemFromAPI {
+  id: string;
+  thumbnail: string;
+  video: string;
+  alt: string;
 }
 
 export default function DroneGallery() {
@@ -15,16 +21,16 @@ export default function DroneGallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/media?category=drone")
+    fetch("/api/content/content_drone_gallery")
       .then((r) => r.json())
       .then((data) => {
-        const media = data.media || [];
+        const apiItems: DroneGalleryItemFromAPI[] = data.items || [];
         setItems(
-          media.map((m: { filepath: string; alt?: string; filename: string; category: string }) => ({
-            src: m.filepath,
-            alt: m.alt || m.filename,
-            category: m.category,
-            video: undefined,
+          apiItems.map((it) => ({
+            src: it.thumbnail,
+            alt: it.alt,
+            // Empty string = pas de vidéo encore → modal shows "Vidéo bientôt disponible"
+            video: it.video || undefined,
           }))
         );
       })

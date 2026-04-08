@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { useRef, useEffect } from "react";
-import type { CategoryData } from "./mariage-categories-data";
-
 interface MariageStudioModalProps {
-  category: CategoryData;
+  category: { title: string; images: { src: string; alt: string }[] };
   images: { src: string; alt: string }[];
   selectedIndex: number;
   onClose: () => void;

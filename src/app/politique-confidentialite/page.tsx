@@ -4,25 +4,25 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 export const metadata: Metadata = {
   title: 'Politique de Confidentialit\u00e9 | Hortense de Ruidiaz',
   description:
-    'Politique de confidentialit\u00e9 et protection des donn\u00e9es personnelles (RGPD) du site hortensederuidiaz.com \u2014 Photographe & Drone \u00e0 Bordeaux.',
+    'Politique de confidentialit\u00e9 et protection des donn\u00e9es personnelles (RGPD) du site hortensederuidiaz.fr \u2014 Photographe & Drone \u00e0 Bordeaux.',
 }
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  '@id': 'https://hortensederuidiaz.com/politique-confidentialite#breadcrumb',
+  '@id': 'https://hortensederuidiaz.fr/politique-confidentialite#breadcrumb',
   itemListElement: [
     {
       '@type': 'ListItem',
       position: 1,
       name: 'Accueil',
-      item: 'https://hortensederuidiaz.com',
+      item: 'https://hortensederuidiaz.fr',
     },
     {
       '@type': 'ListItem',
       position: 2,
       name: 'Politique de confidentialit\u00e9',
-      item: 'https://hortensederuidiaz.com/politique-confidentialite',
+      item: 'https://hortensederuidiaz.fr/politique-confidentialite',
     },
   ],
 }
@@ -55,8 +55,8 @@ export default function PolitiqueConfidentialitePage() {
             <div className="mt-4 space-y-3">
               <p>
                 Le responsable du traitement des donn&eacute;es personnelles collect&eacute;es sur le site{' '}
-                <a href="https://hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                  hortensederuidiaz.com
+                <a href="https://hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                  hortensederuidiaz.fr
                 </a>{' '}
                 est&nbsp;:
               </p>
@@ -64,8 +64,8 @@ export default function PolitiqueConfidentialitePage() {
                 <li><strong className="text-charcoal">Nom :</strong> Hortense de Ruidiaz</li>
                 <li><strong className="text-charcoal">Adresse :</strong> Bordeaux, France</li>
                 <li><strong className="text-charcoal">E-mail :</strong>{' '}
-                  <a href="mailto:contact@hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                    contact@hortensederuidiaz.com
+                  <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                    contact@hortensederuidiaz.fr
                   </a>
                 </li>
               </ul>
@@ -172,8 +172,8 @@ export default function PolitiqueConfidentialitePage() {
                 Pour exercer l&apos;un de vos droits, vous pouvez nous contacter &agrave; l&apos;adresse suivante&nbsp;:
               </p>
               <p>
-                <a href="mailto:contact@hortensederuidiaz.com" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                  contact@hortensederuidiaz.com
+                <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                  contact@hortensederuidiaz.fr
                 </a>
               </p>
               <p>
@@ -188,7 +188,7 @@ export default function PolitiqueConfidentialitePage() {
             </h2>
             <div className="mt-4 space-y-3">
               <p>
-                Le site hortensederuidiaz.com utilise uniquement des <strong>cookies techniques</strong> strictement n&eacute;cessaires au bon fonctionnement du site. Aucun cookie de tra&ccedil;age publicitaire ou de profilage n&apos;est d&eacute;pos&eacute;.
+                Le site hortensederuidiaz.fr utilise uniquement des <strong>cookies techniques</strong> strictement n&eacute;cessaires au bon fonctionnement du site. Aucun cookie de tra&ccedil;age publicitaire ou de profilage n&apos;est d&eacute;pos&eacute;.
               </p>
               <p>
                 Vous pouvez configurer votre navigateur pour refuser les cookies. Cela pourrait cependant alt&eacute;rer votre exp&eacute;rience de navigation.

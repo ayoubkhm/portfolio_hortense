@@ -1,28 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import MediaUploader from "@/components/admin/MediaUploader";
-import MediaGrid from "@/components/admin/MediaGrid";
+import MariageGalleryAdmin from "./MariageGalleryAdmin";
+import DroneGalleryAdmin from "./DroneGalleryAdmin";
+
+const TABS = [
+  { key: "mariage", label: "Mariage" },
+  { key: "drone", label: "Drone" },
+] as const;
+
+type Tab = (typeof TABS)[number]["key"];
 
 export default function AdminGalleryPage() {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleRefresh = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
+  const [tab, setTab] = useState<Tab>("mariage");
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-[#2C2C2C]">
-          Gestion de la galerie
-        </h1>
+        <h1 className="text-2xl font-semibold text-[#2C2C2C]">Galerie</h1>
         <p className="mt-1 text-[#6B6560]">
-          Ajoutez, modifiez ou supprimez vos medias.
+          Gérez les photos mariage (catégories) et drone.
         </p>
       </div>
-      <MediaUploader onUpload={handleRefresh} />
-      <MediaGrid refreshKey={refreshKey} />
+
+      {/* Tabs */}
+      <div className="flex border-b border-[#E8E0D4]">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
+              tab === t.key
+                ? "border-[#C9A96E] text-[#C9A96E]"
+                : "border-transparent text-[#6B6560] hover:text-[#2C2C2C]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "mariage" && <MariageGalleryAdmin />}
+      {tab === "drone" && <DroneGalleryAdmin />}
     </div>
   );
 }

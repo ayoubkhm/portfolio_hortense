@@ -1,16 +1,21 @@
 import Image from "next/image";
+import Link from "next/link";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 
 interface AboutSectionProps {
   heading?: string;
   paragraphs?: string[];
   portraitImage?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
 }
 
 export default function AboutSection({
   heading = "À propos",
   paragraphs = [],
   portraitImage = "/uploads/hortense-portrait.jpg",
+  ctaHref,
+  ctaLabel = "En savoir plus sur Hortense",
 }: AboutSectionProps) {
   return (
     <section id="about" className="bg-cream py-24">
@@ -37,6 +42,15 @@ export default function AboutSection({
                   <p key={i}>{p}</p>
                 ))}
               </div>
+
+              {ctaHref && (
+                <Link
+                  href={ctaHref}
+                  className="mt-8 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-white transition-colors hover:bg-gold/90"
+                >
+                  {ctaLabel} &rarr;
+                </Link>
+              )}
             </div>
           </div>
         </div>

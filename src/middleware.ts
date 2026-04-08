@@ -2,16 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 
 const STATE_CHANGING_METHODS = ["POST", "PUT", "PATCH", "DELETE"];
 
+function normalizeHost(h: string): string {
+  return h.replace(/^www\./, "").split(":")[0];
+}
+
 function validateOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
   const referer = request.headers.get("referer");
 
-  // If Origin header is present, validate it matches
+  // If Origin header is present, validate it matches (ignoring www prefix)
   if (origin) {
     try {
       const originUrl = new URL(origin);
-      return originUrl.host === host;
+      return normalizeHost(originUrl.host) === normalizeHost(host || "");
     } catch {
       return false;
     }
@@ -21,7 +25,7 @@ function validateOrigin(request: NextRequest): boolean {
   if (referer) {
     try {
       const refererUrl = new URL(referer);
-      return refererUrl.host === host;
+      return normalizeHost(refererUrl.host) === normalizeHost(host || "");
     } catch {
       return false;
     }

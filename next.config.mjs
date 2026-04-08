@@ -1,17 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // unoptimized: bypass next/image optimizer entirely.
+    // Reason: Next.js scans public/ at build time and refuses to serve files
+    // added afterward (returns 404 + /_next/image returns 400). Since Hortense
+    // uploads images via /admin/* (which writes to public/uploads/ at runtime),
+    // we MUST bypass the optimizer or her uploads stay invisible until the next deploy.
+    // Nginx serves /uploads/* directly with cache (see nginx config on VPS).
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
     ],
-    formats: ["image/avif", "image/webp"],
-    // Mitigate CVE: limit image optimizer cache size and dimensions
-    minimumCacheTTL: 60,
-    deviceSizes: [640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   experimental: {
     serverActions: {

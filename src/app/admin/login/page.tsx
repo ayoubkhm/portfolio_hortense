@@ -1,10 +1,20 @@
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { validateSession } from "@/lib/auth";
 import LoginForm from "@/components/admin/LoginForm";
 
 export const metadata = {
   title: "Administration - Hortense de Ruidiaz",
 };
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("admin_session");
+  if (session) {
+    const isValid = await validateSession();
+    if (isValid) redirect("/admin/accueil");
+  }
+
   return (
     <div className="min-h-screen bg-[#2C2C2C] flex items-center justify-center px-4">
       <div className="w-full max-w-md">

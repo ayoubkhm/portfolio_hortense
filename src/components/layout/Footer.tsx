@@ -13,7 +13,7 @@ const footerLinks = [
 ];
 
 export default function Footer() {
-  const [email, setEmail] = useState("contact@hortensederuidiaz.com");
+  const [email, setEmail] = useState("contact@hortensederuidiaz.fr");
   const [phone, setPhone] = useState("06 16 28 22 70");
   const [location, setLocation] = useState("Bordeaux, France");
 
