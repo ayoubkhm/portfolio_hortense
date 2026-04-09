@@ -2,9 +2,9 @@ import { Metadata } from 'next'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 
 export const metadata: Metadata = {
-  title: 'Mentions Légales | Hortense de Ruidiaz',
+  title: 'Mentions Légales',
   description:
-    'Mentions légales du site hortensederuidiaz.fr — Photographe & Drone à Bordeaux.',
+    'Mentions légales du site hortensederuidiaz.fr — Hortense de Ruidiaz, photographe de mariage et télépilote de drone à Bordeaux. Éditeur, hébergeur et conditions d\u0027utilisation.',
   alternates: {
     canonical: 'https://hortensederuidiaz.fr/mentions-legales',
   },
