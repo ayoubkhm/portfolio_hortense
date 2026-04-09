@@ -231,12 +231,20 @@ const homeAboutTeaser: LockedRendererMeta = {
               <div className="mt-6 space-y-4 leading-relaxed text-warmgray">
                 <p>{firstParagraph}</p>
               </div>
-              <Link
-                href="/a-propos"
-                className="mt-8 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-white transition-colors hover:bg-gold/90"
-              >
-                En savoir plus sur Hortense &rarr;
-              </Link>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/a-propos"
+                  className="inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-white transition-colors hover:bg-gold/90"
+                >
+                  En savoir plus &rarr;
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-block rounded-full border-2 border-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-gold transition-colors hover:bg-gold hover:text-white"
+                >
+                  Me contacter
+                </Link>
+              </div>
             </div>
           </div>
         </div>

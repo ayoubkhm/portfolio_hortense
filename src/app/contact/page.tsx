@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PageHero from "@/components/sections/PageHero";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnimatedSection from "@/components/ui/AnimatedSection";
@@ -126,6 +127,20 @@ export default async function ContactPage() {
                 </div>
               </div>
             </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-sand/30 py-16">
+        <div className="mx-auto max-w-6xl px-6 text-center">
+          <h2 className="font-serif text-2xl text-charcoal mb-6">Découvrez mes prestations</h2>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/mariage" className="inline-block rounded-full border-2 border-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-gold transition-all hover:bg-gold hover:text-white">
+              Photographie de Mariage
+            </Link>
+            <Link href="/drone" className="inline-block rounded-full border-2 border-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-gold transition-all hover:bg-gold hover:text-white">
+              Prises de Vue Drone
+            </Link>
           </div>
         </div>
       </section>
