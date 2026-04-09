@@ -351,6 +351,8 @@ function getBlockSummary(block: Block): string {
       return `${block.data.heading} — ${block.data.cards.length} card(s)`;
     case "testimonials":
       return `${block.data.heading} — ${block.data.items.length} témoignage(s)`;
+    case "cross-link":
+      return `${block.data.heading} → ${block.data.href}`;
     case "locked": {
       const renderer = getLockedRenderer(block.data.rendererKey);
       return renderer?.label || `Section : ${block.data.rendererKey}`;

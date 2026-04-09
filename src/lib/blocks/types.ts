@@ -178,6 +178,17 @@ export type LinkCardsBlock = BlockBase<
   }
 >;
 
+// ─── Cross-link (bandeau renvoi vers une autre page) ────────────────────────
+export type CrossLinkBlock = BlockBase<
+  "cross-link",
+  {
+    heading: string;
+    description: string;
+    href: string;
+    linkText: string;
+  }
+>;
+
 // ─── Locked / Section non modifiable ─────────────────────────────────────────
 // A "locked" block is rendered by code, not by data. The block stores only
 // a `rendererKey` that maps to a hardcoded renderer in
@@ -209,6 +220,7 @@ export type Block =
   | QuoteBlock
   | LinkCardsBlock
   | TestimonialsBlock
+  | CrossLinkBlock
   | LockedBlock;
 
 export type BlockType = Block["type"];

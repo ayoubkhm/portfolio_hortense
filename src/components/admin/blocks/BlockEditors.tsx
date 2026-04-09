@@ -29,6 +29,7 @@ import type {
   QuoteBlock,
   LinkCardsBlock,
   TestimonialsBlock,
+  CrossLinkBlock,
   LockedBlock,
 } from "@/lib/blocks/types";
 
@@ -533,6 +534,18 @@ function TestimonialsEditor({ data, onChange }: EditorProps<TestimonialsBlock>) 
   );
 }
 
+// ─── Cross-link (bandeau renvoi vers une autre page) ────────────────────────
+function CrossLinkEditor({ data, onChange }: EditorProps<CrossLinkBlock>) {
+  return (
+    <div className="space-y-4">
+      <TextField label="Titre" value={data.heading} onChange={(v) => onChange({ ...data, heading: v })} placeholder="Besoin de vues aériennes ?" />
+      <TextAreaField label="Description" value={data.description} onChange={(v) => onChange({ ...data, description: v })} rows={2} placeholder="Sublimez votre mariage avec des prises de vue drone." />
+      <TextField label="Lien" value={data.href} onChange={(v) => onChange({ ...data, href: v })} placeholder="/drone" />
+      <TextField label="Texte du bouton" value={data.linkText} onChange={(v) => onChange({ ...data, linkText: v })} placeholder="Découvrir les prestations drone" />
+    </div>
+  );
+}
+
 // ─── Locked (read-only — must contact dev to edit) ──────────────────────────
 function LockedEditor({ data }: EditorProps<LockedBlock>) {
   const renderer = getLockedRenderer(data.rendererKey);
@@ -611,6 +624,8 @@ export default function BlockEditor({
       return <LinkCardsEditor data={block.data} onChange={onChange as (d: LinkCardsBlock["data"]) => void} />;
     case "testimonials":
       return <TestimonialsEditor data={block.data} onChange={onChange as (d: TestimonialsBlock["data"]) => void} />;
+    case "cross-link":
+      return <CrossLinkEditor data={block.data} onChange={onChange as (d: CrossLinkBlock["data"]) => void} />;
     case "locked":
       return <LockedEditor data={block.data} onChange={onChange as (d: LockedBlock["data"]) => void} />;
   }

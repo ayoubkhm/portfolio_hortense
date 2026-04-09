@@ -188,6 +188,18 @@ const QUOTE: BlockTypeMeta<"quote"> = {
   }),
 };
 
+const CROSS_LINK: BlockTypeMeta<"cross-link"> = {
+  type: "cross-link",
+  label: "Renvoi vers une page",
+  description: "Bandeau avec titre, description et bouton renvoyant vers une autre page du site.",
+  defaultData: () => ({
+    heading: "Découvrez aussi",
+    description: "Description courte de la prestation liée.",
+    href: "/contact",
+    linkText: "En savoir plus",
+  }),
+};
+
 // Order in this array = order in the "+ Add block" menu in the admin
 export const BLOCK_REGISTRY = [
   HERO,
@@ -201,6 +213,7 @@ export const BLOCK_REGISTRY = [
   STEPS,
   CERTIFICATIONS,
   CTA,
+  CROSS_LINK,
   IMAGE_TEXT,
   LINK_CARDS,
   TESTIMONIALS,

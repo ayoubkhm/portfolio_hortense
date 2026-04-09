@@ -5,7 +5,6 @@ import { getContent, MARIAGE_DEFAULTS } from "@/lib/content";
 import { buildJsonLd } from "@/lib/blocks/jsonld";
 import { asBlockPageContent, mariageContentToBlocks } from "@/lib/blocks/migrators";
 import { getPageMetadata } from "@/lib/metadata";
-import CrossLinkBanner from "@/components/sections/CrossLinkBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -70,12 +69,6 @@ export default async function MariagePage() {
         .map((block) => (
           <BlockRenderer key={block.id} block={block} />
         ))}
-      <CrossLinkBanner
-        heading="Besoin de vues aériennes ?"
-        description="Sublimez votre mariage ou vos projets avec des prises de vue drone spectaculaires."
-        href="/drone"
-        linkText="Découvrir les prestations drone"
-      />
     </main>
   );
 }

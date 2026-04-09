@@ -32,6 +32,7 @@ import type {
   QuoteBlock,
   LinkCardsBlock,
   TestimonialsBlock,
+  CrossLinkBlock,
   LockedBlock,
 } from "@/lib/blocks/types";
 
@@ -407,6 +408,25 @@ function TestimonialsBlockView({ block }: { block: TestimonialsBlock }) {
 }
 
 // ─── Locked (rendered by hardcoded code, not by data) ───────────────────────
+// ─── Cross-link (bandeau renvoi vers une autre page) ────────────────────────
+function CrossLinkBlockView({ block }: { block: CrossLinkBlock }) {
+  return (
+    <section className="bg-sand/30 py-16 px-4">
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="font-serif text-2xl text-charcoal mb-3">{block.data.heading}</h2>
+        <p className="text-warmgray mb-6">{block.data.description}</p>
+        <TrackedLink
+          href={block.data.href}
+          className="inline-block rounded-full border-2 border-gold px-8 py-3 text-sm font-medium uppercase tracking-wide text-gold transition-all hover:bg-gold hover:text-white"
+          eventLabel={block.data.linkText}
+        >
+          {block.data.linkText} &rarr;
+        </TrackedLink>
+      </div>
+    </section>
+  );
+}
+
 // Locked renderers can be sync OR async (e.g. when they need to read from DB
 // at request time). This is an async server component that awaits both cases.
 async function LockedBlockView({ block }: { block: LockedBlock }) {
@@ -476,6 +496,8 @@ export default function BlockRenderer({ block }: { block: Block }) {
       return <LinkCardsBlockView block={block} />;
     case "testimonials":
       return <TestimonialsBlockView block={block} />;
+    case "cross-link":
+      return <CrossLinkBlockView block={block} />;
     case "locked":
       return <LockedBlockView block={block} />;
   }

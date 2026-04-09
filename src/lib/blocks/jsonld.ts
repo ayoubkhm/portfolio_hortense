@@ -109,6 +109,7 @@ function blockToJsonLd(block: Block): JsonLdNode[] {
     case "cta":
     case "image-text":
     case "link-cards":
+    case "cross-link":
     case "locked":
       // Locked blocks could in theory contribute SEO via their hardcoded
       // renderer, but for now we keep them schema-free. If needed, the page

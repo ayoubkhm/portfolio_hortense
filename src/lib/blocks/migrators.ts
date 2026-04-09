@@ -119,6 +119,18 @@ export function mariageContentToBlocks(content: MariageContent): Block[] {
     },
   });
 
+  // Cross-link to drone
+  blocks.push({
+    id: newBlockId(),
+    type: "cross-link",
+    data: {
+      heading: "Besoin de vues aériennes ?",
+      description: "Sublimez votre mariage ou vos projets avec des prises de vue drone spectaculaires.",
+      href: "/drone",
+      linkText: "Découvrir les prestations drone",
+    },
+  });
+
   return blocks;
 }
 
@@ -213,6 +225,18 @@ export function droneContentToBlocks(content: DroneContent): Block[] {
       subtitle: content.ctaSubtitle,
       buttonText: content.ctaButtonText,
       buttonHref: "/contact",
+    },
+  });
+
+  // Cross-link to mariage
+  blocks.push({
+    id: newBlockId(),
+    type: "cross-link",
+    data: {
+      heading: "Vous préparez votre mariage ?",
+      description: "Immortalisez chaque instant de votre plus beau jour avec un reportage photo sur-mesure.",
+      href: "/mariage",
+      linkText: "Découvrir les prestations mariage",
     },
   });
 
