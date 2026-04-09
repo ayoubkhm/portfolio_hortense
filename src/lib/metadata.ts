@@ -26,18 +26,18 @@ const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
   },
   mariage: {
     title: "Photographe Mariage Bordeaux — Tarifs dès 1 100 €",
-    description: "Photographe mariage à Bordeaux. Reportage photo et vidéo de la cérémonie à la soirée. Tarifs de 1 100 € à 2 100 €. Devis gratuit.",
+    description: "Photographe mariage à Bordeaux. Galerie privée en ligne incluse. Reportage photo et vidéo de la cérémonie à la soirée. Tarifs de 1 100 € à 2 100 €. Devis gratuit.",
   },
   drone: {
     title: "Opératrice Drone Certifiée CATS — Bordeaux",
-    description: "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
+    description: "Prises de vue aériennes par drone à Bordeaux. Photos HD et vidéos 4K. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
   },
   contact: {
     title: "Contact — Devis Gratuit Photo & Drone",
-    description: "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
+    description: "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Formulaire en ligne, téléphone ou email. Tél. 06 16 28 22 70. Réponse sous 24h.",
   },
   "a-propos": {
-    title: "À propos — Hortense de Ruidiaz, Photographe & Drone Bordeaux",
+    title: "À propos — Photographe & Drone Bordeaux",
     description: "Découvrez le parcours d'Hortense de Ruidiaz, photographe professionnelle et opératrice drone certifiée CATS à Bordeaux.",
   },
 };
@@ -74,6 +74,7 @@ export async function getPageMetadata(pageSlug: string): Promise<Metadata> {
       images: [{ url: ogImage, width: 1200, height: 630, alt: `${title} — Hortense de Ruidiaz` }],
     },
     twitter: { card: "summary_large_image" },
+    alternates: { canonical: url },
   };
 }
 

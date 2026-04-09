@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'Mentions Légales | Hortense de Ruidiaz',
   description:
     'Mentions légales du site hortensederuidiaz.fr — Photographe & Drone à Bordeaux.',
+  alternates: {
+    canonical: 'https://hortensederuidiaz.fr/mentions-legales',
+  },
 }
 
 export default function MentionsLegalesPage() {
