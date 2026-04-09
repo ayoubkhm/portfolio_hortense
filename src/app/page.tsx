@@ -37,6 +37,12 @@ export default async function Home() {
         name: "Hortense de Ruidiaz",
         jobTitle: "Photographe & Opératrice Drone",
       },
+      hasCredential: {
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: "certificate",
+        name: "CATS — Certificat d'Aptitude Théorique de Télépilote",
+        recognizedBy: { "@type": "Organization", name: "DGAC" },
+      },
     },
     {
       "@type": "LocalBusiness",

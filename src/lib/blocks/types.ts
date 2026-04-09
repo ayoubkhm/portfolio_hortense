@@ -137,6 +137,7 @@ export type ImageTextBlock = BlockBase<
   "image-text",
   {
     image: string;
+    imageAlt?: string;
     heading?: string;
     paragraphs: string[];
     imagePosition: "left" | "right";

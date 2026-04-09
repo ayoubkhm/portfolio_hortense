@@ -146,7 +146,24 @@ function PricingBlockView({ block }: { block: PricingBlock }) {
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 function FaqBlockView({ block }: { block: FaqBlock }) {
   if (block.data.items.length === 0) return null;
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: block.data.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
   return (
+    <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+    />
     <section className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
         <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-12">
@@ -167,6 +184,7 @@ function FaqBlockView({ block }: { block: FaqBlock }) {
         </div>
       </div>
     </section>
+    </>
   );
 }
 
@@ -332,7 +350,7 @@ function ImageTextBlockView({ block }: { block: ImageTextBlock }) {
             {block.data.image && (
               <Image
                 src={block.data.image}
-                alt={block.data.heading || "Illustration"}
+                alt={block.data.imageAlt || block.data.heading || "Illustration"}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"

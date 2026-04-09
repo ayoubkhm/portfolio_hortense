@@ -473,6 +473,7 @@ function ImageTextEditor({ data, onChange }: EditorProps<ImageTextBlock>) {
   return (
     <div className="space-y-4">
       <BackgroundImageField label="Image" value={data.image} onChange={(v) => onChange({ ...data, image: v })} recommendedSize="1200 x 900 px (4:3)" />
+      <TextField label="Texte alternatif de l'image" value={data.imageAlt || ""} onChange={(v) => onChange({ ...data, imageAlt: v })} placeholder="Description de l'image pour le SEO et l'accessibilité" />
       <TextField label="Titre (optionnel)" value={data.heading || ""} onChange={(v) => onChange({ ...data, heading: v })} />
       <ParagraphsField label="Paragraphes" value={data.paragraphs} onChange={(v) => onChange({ ...data, paragraphs: v })} />
       <div>

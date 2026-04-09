@@ -1,6 +1,7 @@
 import { writeFile, unlink, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import sharp from "sharp";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const MIME_TO_EXT: Record<string, string> = {
@@ -14,6 +15,9 @@ const MIME_TO_EXT: Record<string, string> = {
 };
 const ALLOWED_TYPES = Object.keys(MIME_TO_EXT);
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const IMAGE_MAX_WIDTH = 2400;
+const IMAGE_WEBP_QUALITY = 85;
 
 function validateMagicBytes(buffer: Buffer, mimetype: string): boolean {
   if (buffer.length < 12) return false;
@@ -66,10 +70,24 @@ export async function saveFile(file: File): Promise<{ filename: string; filepath
     throw new Error("Le contenu du fichier ne correspond pas au type MIME déclaré");
   }
 
-  const filename = `${crypto.randomBytes(16).toString("hex")}${ext}`;
+  let finalBuffer = buffer;
+  let finalExt = ext;
+
+  // Optimize images: resize to max 2400px wide, convert to WebP q85
+  if (IMAGE_TYPES.has(file.type)) {
+    finalBuffer = Buffer.from(
+      await sharp(buffer)
+        .resize({ width: IMAGE_MAX_WIDTH, withoutEnlargement: true })
+        .webp({ quality: IMAGE_WEBP_QUALITY })
+        .toBuffer()
+    );
+    finalExt = ".webp";
+  }
+
+  const filename = `${crypto.randomBytes(16).toString("hex")}${finalExt}`;
   const filepath = `/uploads/${filename}`;
 
-  await writeFile(path.join(UPLOAD_DIR, filename), buffer);
+  await writeFile(path.join(UPLOAD_DIR, filename), finalBuffer);
 
   return { filename, filepath };
 }
