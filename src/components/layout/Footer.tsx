@@ -48,12 +48,12 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <div className="text-center text-sm text-sand/70 md:text-right">
+          <div className="space-y-1 text-center text-sm text-sand/70 md:text-right">
             <p>{location}</p>
-            <a href={`tel:+33${phone.replace(/\s/g, "").replace(/^0/, "")}`} className="transition-colors hover:text-gold">
+            <a href={`tel:+33${phone.replace(/\s/g, "").replace(/^0/, "")}`} className="block transition-colors hover:text-gold">
               {phone}
             </a>
-            <a href={`mailto:${email}`} className="transition-colors hover:text-gold">
+            <a href={`mailto:${email}`} className="block transition-colors hover:text-gold">
               {email}
             </a>
           </div>

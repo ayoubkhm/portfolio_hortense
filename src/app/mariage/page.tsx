@@ -1,31 +1,16 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlockRenderer from "@/components/blocks/BlockRenderer";
 import { getContent, MARIAGE_DEFAULTS } from "@/lib/content";
 import { buildJsonLd } from "@/lib/blocks/jsonld";
 import { asBlockPageContent, mariageContentToBlocks } from "@/lib/blocks/migrators";
+import { getPageMetadata } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Photographe Mariage Bordeaux — Tarifs dès 1 100 €",
-  description:
-    "Photographe mariage à Bordeaux. Reportage photo et vidéo de la cérémonie à la soirée. Tarifs de 1 100 € à 2 100 €. Devis gratuit.",
-  openGraph: {
-    title: "Photographe Mariage Bordeaux — Tarifs dès 1 100 €",
-    description:
-      "Photographe mariage à Bordeaux. Reportage photo et vidéo de la cérémonie à la soirée. Tarifs de 1 100 € à 2 100 €. Devis gratuit.",
-    url: "https://hortensederuidiaz.fr/mariage",
-    images: [
-      {
-        url: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Photographe mariage Bordeaux — Hortense de Ruidiaz",
-      },
-    ],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("mariage");
+}
 
 export default async function MariagePage() {
   // Load content. Supports both legacy flat shape and new block shape:

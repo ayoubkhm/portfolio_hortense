@@ -2,6 +2,7 @@ import BlockRenderer from "@/components/blocks/BlockRenderer";
 import { getContent, HOMEPAGE_DEFAULTS } from "@/lib/content";
 import { buildJsonLd } from "@/lib/blocks/jsonld";
 import { asBlockPageContent, homepageContentToBlocks } from "@/lib/blocks/migrators";
+import { getOgImageUrl } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export default async function Home() {
   const stored = await getContent<unknown>("content_homepage", null);
   const blockContent =
     asBlockPageContent(stored, "homepage") ?? { blocks: homepageContentToBlocks(HOMEPAGE_DEFAULTS) };
+  const gbpUrl = process.env.GBP_URL || "";
+  const ogImage = await getOgImageUrl();
 
   // Page-level JSON-LD nodes (Organization, LocalBusiness, WebSite, WebPage).
   // The home page IS the root of the site so it carries the global business schemas.
@@ -20,7 +23,7 @@ export default async function Home() {
       url: "https://hortensederuidiaz.fr",
       logo: {
         "@type": "ImageObject",
-        url: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
+        url: ogImage,
       },
       description: "Photographe de mariage et opératrice drone certifiée CATS à Bordeaux",
       email: "contact@hortensederuidiaz.fr",
@@ -39,7 +42,7 @@ export default async function Home() {
       "@type": "LocalBusiness",
       "@id": "https://hortensederuidiaz.fr/#localbusiness",
       name: "Hortense de Ruidiaz",
-      image: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
+      image: ogImage,
       telephone: "+33616282270",
       email: "contact@hortensederuidiaz.fr",
       priceRange: "€€",
@@ -65,6 +68,7 @@ export default async function Home() {
         opens: "09:00",
         closes: "19:00",
       },
+      ...(gbpUrl ? { sameAs: [gbpUrl] } : {}),
     },
     {
       "@type": "WebSite",

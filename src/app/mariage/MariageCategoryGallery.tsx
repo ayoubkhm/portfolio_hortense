@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Image from "next/image";
 import MariageStudioModal from "./MariageStudioModal";
 
 interface CategoryImage {
@@ -70,8 +69,11 @@ export default function MariageCategoryGallery() {
         {categories
           .filter((cat) => cat.images.length > 0)
           .map((cat, i) => {
-            // Cover = first image of the category (single source of truth)
-            const cover = cat.images[0].src;
+            // Cover = first image, served as a resized thumbnail for quality
+            const coverSrc = cat.images[0].src;
+            const cover = coverSrc.startsWith("/uploads/")
+              ? `/api/thumb?src=${encodeURIComponent(coverSrc)}&w=800`
+              : coverSrc;
             return (
               <button
                 key={cat.title}
@@ -79,15 +81,14 @@ export default function MariageCategoryGallery() {
                   setOpenCategory(cat.title);
                   setSelectedIndex(0);
                 }}
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl"
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-shadow duration-300 hover:shadow-xl"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={cover}
                   alt={cat.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/70" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">

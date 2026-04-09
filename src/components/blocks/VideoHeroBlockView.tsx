@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { VideoHeroBlock } from "@/lib/blocks/types";
+import { trackEvent } from "@/lib/gtag";
 
 const DEFAULT_VIDEO = "/uploads/hero-video.mp4";
 
@@ -66,6 +67,7 @@ export default function VideoHeroBlockView({ block }: { block: VideoHeroBlock })
                 <Link
                   key={i}
                   href={btn.href}
+                  onClick={() => trackEvent({ action: "hero_cta_click", category: "engagement", label: btn.label })}
                   className="inline-block rounded-full border-2 border-gold bg-transparent px-8 py-3 text-sm font-semibold uppercase tracking-widest text-gold transition-all duration-300 hover:bg-gold hover:text-white"
                 >
                   {btn.label}
@@ -74,6 +76,7 @@ export default function VideoHeroBlockView({ block }: { block: VideoHeroBlock })
                 <Link
                   key={i}
                   href={btn.href}
+                  onClick={() => trackEvent({ action: "hero_cta_click", category: "engagement", label: btn.label })}
                   className="inline-block rounded-full bg-gold px-8 py-3 text-sm font-semibold uppercase tracking-widest text-white transition-all duration-300 hover:bg-gold/80 hover:shadow-lg"
                 >
                   {btn.label}

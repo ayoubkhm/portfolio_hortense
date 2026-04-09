@@ -86,7 +86,7 @@ export async function PATCH(
 
     if (category !== undefined) {
       const parentCategory = String(category).split("/")[0];
-      const validParents = ["mariage", "drone", "autre"];
+      const validParents = ["mariage", "drone", "autre", "brochure", "seo"];
       if (!validParents.includes(parentCategory)) {
         return NextResponse.json(
           { error: "Catégorie invalide. Doit commencer par mariage, drone ou autre." },

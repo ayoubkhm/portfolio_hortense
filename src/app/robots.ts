@@ -1,15 +1,30 @@
 import { MetadataRoute } from "next";
 
-// TODO: Quand Hortense est déclarée auto-entrepreneur, remplacer Disallow: / par Allow: /
-// et décommenter les règles AI crawlers + sitemap
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
+        allow: "/",
+        disallow: ["/admin/", "/api/"],
+      },
+      {
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "ChatGPT-User",
+        disallow: "/",
+      },
+      {
+        userAgent: "CCBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "anthropic-ai",
         disallow: "/",
       },
     ],
-    // sitemap: "https://hortensederuidiaz.fr/sitemap.xml",
+    sitemap: "https://hortensederuidiaz.fr/sitemap.xml",
   };
 }

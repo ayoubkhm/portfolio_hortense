@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { AdminUser, ThemeColors } from "@/types";
+import MediaUploadButton from "@/components/admin/MediaUploadButton";
 
 const ROLE_OPTIONS = [
   { value: "lecteur", label: "Lecteur", desc: "Consultation uniquement" },
@@ -34,6 +35,18 @@ export default function AdminSettingsPage() {
   const [colorSuccess, setColorSuccess] = useState("");
   const [colorError, setColorError] = useState("");
 
+  // SEO / Metadata
+  const [seo, setSeo] = useState<{
+    siteTitle: string; siteDescription: string; ogImage: string;
+    pages?: Record<string, { title?: string; description?: string }>;
+  }>({ siteTitle: "", siteDescription: "", ogImage: "", pages: {} });
+  const [isSavingSeo, setIsSavingSeo] = useState(false);
+  const [seoSuccess, setSeoSuccess] = useState("");
+  const [seoError, setSeoError] = useState("");
+
+  // Google env vars (read-only display)
+  const [google, setGoogle] = useState({ gaId: "", gscProperty: "", gadsId: "", gbpUrl: "" });
+
   // Current user role
   const [currentRole, setCurrentRole] = useState("");
 
@@ -53,6 +66,27 @@ export default function AdminSettingsPage() {
     fetch("/api/auth/me")
       .then((r) => r.json())
       .then((data) => setCurrentRole(data.role || ""))
+      .catch(() => {});
+
+    // Load Google env vars (read-only)
+    fetch("/api/settings/google")
+      .then((r) => r.json())
+      .then((data) => {
+        setGoogle({
+          gaId: data.gaId?.display || "",
+          gscProperty: data.gscProperty?.display || "",
+          gadsId: data.gadsId?.display || "",
+          gbpUrl: data.gbpUrl?.display || "",
+        });
+      })
+      .catch(() => {});
+
+    // Load SEO
+    fetch("/api/content/content_seo")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.siteTitle) setSeo(data);
+      })
       .catch(() => {});
 
     // Load colors
@@ -89,6 +123,27 @@ export default function AdminSettingsPage() {
       setColorError("Erreur lors de la sauvegarde.");
     } finally {
       setIsSavingColors(false);
+    }
+  };
+
+  // --- SEO ---
+  const handleSaveSeo = async () => {
+    setIsSavingSeo(true);
+    setSeoError("");
+    setSeoSuccess("");
+    try {
+      const res = await fetch("/api/content/content_seo", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(seo),
+      });
+      if (!res.ok) throw new Error();
+      setSeoSuccess("Métadonnées sauvegardées !");
+      setTimeout(() => setSeoSuccess(""), 5000);
+    } catch {
+      setSeoError("Erreur lors de la sauvegarde.");
+    } finally {
+      setIsSavingSeo(false);
     }
   };
 
@@ -181,6 +236,154 @@ export default function AdminSettingsPage() {
       <div>
         <h1 className="text-2xl font-semibold text-[#2C2C2C]">Paramètres</h1>
         <p className="mt-1 text-[#6B6560]">Configuration générale du site.</p>
+      </div>
+
+      {/* SEO / Metadata */}
+      <div className="bg-white rounded-xl shadow-sm border border-[#E8E0D4] p-6 space-y-5">
+        <div>
+          <h2 className="text-lg font-semibold text-[#2C2C2C]">Métadonnées / SEO</h2>
+          <p className="text-sm text-[#6B6560] mt-1">Ces informations apparaissent quand le site est partagé sur WhatsApp, Facebook, etc.</p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1">Titre du site</label>
+            <input
+              type="text"
+              value={seo.siteTitle}
+              onChange={(e) => setSeo((p) => ({ ...p, siteTitle: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] text-sm focus:ring-2 focus:ring-[#C9A96E] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1">Description</label>
+            <textarea
+              value={seo.siteDescription}
+              onChange={(e) => setSeo((p) => ({ ...p, siteDescription: e.target.value }))}
+              rows={3}
+              className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] text-sm focus:ring-2 focus:ring-[#C9A96E] focus:outline-none resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1">Image de partage (OG Image)</label>
+            <p className="text-xs text-[#6B6560] mb-2">L&apos;image qui apparaît quand le site est partagé. Format recommandé : 1200x630px.</p>
+            <div className="flex items-start gap-4">
+              {seo.ogImage && (
+                <div className="relative w-48 h-24 rounded-lg overflow-hidden border border-[#E8E0D4] shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={seo.ogImage}
+                    alt="OG Image preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="space-y-2">
+                <MediaUploadButton
+                  accept="image"
+                  category="seo"
+                  alt="OG Image"
+                  onUploaded={(path) => setSeo((p) => ({ ...p, ogImage: path }))}
+                  label={seo.ogImage ? "Changer l'image" : "Uploader une image"}
+                  variant="solid"
+                  size="sm"
+                />
+                {seo.ogImage && (
+                  <p className="text-xs text-[#6B6560] truncate max-w-xs">{seo.ogImage}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Per-page metadata */}
+        <div className="pt-4 border-t border-[#E8E0D4]">
+          <h3 className="text-sm font-semibold text-[#2C2C2C] mb-3">Métadonnées par page</h3>
+          <p className="text-xs text-[#6B6560] mb-4">Titre et description affichés dans Google et lors du partage. Laissez vide pour utiliser les valeurs par défaut.</p>
+          <div className="space-y-4">
+            {[
+              { slug: "accueil", label: "Accueil", placeholderTitle: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz" },
+              { slug: "mariage", label: "Mariage", placeholderTitle: "Photographe Mariage Bordeaux — Tarifs dès 1 100 €" },
+              { slug: "drone", label: "Drone", placeholderTitle: "Opératrice Drone Certifiée CATS — Bordeaux" },
+              { slug: "contact", label: "Contact", placeholderTitle: "Contact — Devis Gratuit Photo & Drone" },
+              { slug: "a-propos", label: "À propos", placeholderTitle: "À propos — Hortense de Ruidiaz" },
+            ].map((page) => (
+              <details key={page.slug} className="rounded-lg border border-[#E8E0D4] bg-[#FAF7F2]">
+                <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-[#2C2C2C] hover:text-[#C9A96E] transition-colors">
+                  {page.label}
+                  {seo.pages?.[page.slug]?.title && <span className="ml-2 text-xs text-[#8A9A7B]">personnalisé</span>}
+                </summary>
+                <div className="px-4 pb-4 space-y-2">
+                  <input
+                    type="text"
+                    value={seo.pages?.[page.slug]?.title || ""}
+                    onChange={(e) => setSeo((p) => ({
+                      ...p,
+                      pages: { ...p.pages, [page.slug]: { ...p.pages?.[page.slug], title: e.target.value } },
+                    }))}
+                    placeholder={page.placeholderTitle}
+                    className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] text-sm focus:ring-2 focus:ring-[#C9A96E] focus:outline-none"
+                  />
+                  <textarea
+                    value={seo.pages?.[page.slug]?.description || ""}
+                    onChange={(e) => setSeo((p) => ({
+                      ...p,
+                      pages: { ...p.pages, [page.slug]: { ...p.pages?.[page.slug], description: e.target.value } },
+                    }))}
+                    placeholder="Description..."
+                    rows={2}
+                    className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] text-sm focus:ring-2 focus:ring-[#C9A96E] focus:outline-none resize-none"
+                  />
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        {seoError && <p className="text-red-600 text-sm">{seoError}</p>}
+        {seoSuccess && <p className="text-[#8A9A7B] text-sm">{seoSuccess}</p>}
+
+        <button
+          onClick={handleSaveSeo}
+          disabled={isSavingSeo}
+          className="bg-[#C9A96E] text-white px-6 py-2.5 rounded-lg hover:bg-[#b8984f] transition-all disabled:opacity-50 font-medium text-sm"
+        >
+          {isSavingSeo ? "Sauvegarde..." : "Sauvegarder les métadonnées"}
+        </button>
+      </div>
+
+      {/* Google Services (read-only, configured via .env on VPS) */}
+      <div className="bg-white rounded-xl shadow-sm border border-[#E8E0D4] p-6 space-y-5">
+        <div>
+          <h2 className="text-lg font-semibold text-[#2C2C2C]">Services Google</h2>
+          <p className="text-sm text-[#6B6560] mt-1">Comptes Google connectés au site. Pour modifier ces valeurs, contactez votre développeur.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {[
+            { label: "Google Analytics (GA4)", value: google.gaId, placeholder: "Non configuré", icon: "analytics" },
+            { label: "Google Search Console", value: google.gscProperty, placeholder: "Non configuré", icon: "search" },
+            { label: "Google Ads", value: google.gadsId, placeholder: "Non configuré", icon: "ads" },
+            { label: "Google Business Profile", value: google.gbpUrl, placeholder: "Non configuré", icon: "gbp" },
+          ].map((item) => (
+            <div key={item.label} className="p-4 rounded-lg border border-[#E8E0D4] bg-[#FAF7F2] space-y-2">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${item.value ? "bg-[#8A9A7B]" : "bg-[#E8E0D4]"}`} />
+                <h3 className="text-sm font-semibold text-[#2C2C2C]">{item.label}</h3>
+              </div>
+              <input
+                type="text"
+                value={item.value || item.placeholder}
+                readOnly
+                className={`w-full px-3 py-2 rounded-lg border border-[#E8E0D4] text-sm font-mono cursor-not-allowed ${
+                  item.value ? "bg-[#FAF7F2] text-[#2C2C2C]" : "bg-[#FAF7F2] text-[#6B6560]/50 italic"
+                }`}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Theme Colors */}

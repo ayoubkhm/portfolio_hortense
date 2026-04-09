@@ -1,34 +1,16 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlockRenderer from "@/components/blocks/BlockRenderer";
 import { getContent, DRONE_DEFAULTS } from "@/lib/content";
 import { buildJsonLd } from "@/lib/blocks/jsonld";
 import { asBlockPageContent, droneContentToBlocks } from "@/lib/blocks/migrators";
+import { getPageMetadata } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Opératrice Drone Certifiée CATS — Bordeaux",
-  description:
-    "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
-  openGraph: {
-    title: "Opératrice Drone Certifiée CATS — Bordeaux",
-    description:
-      "Prises de vue aériennes par drone à Bordeaux. Immobilier, suivi de chantier, événements. Pilote certifiée CATS. Devis gratuit.",
-    url: "https://hortensederuidiaz.fr/drone",
-    images: [
-      {
-        url: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Opératrice drone Bordeaux — Hortense de Ruidiaz",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("drone");
+}
 
 export default async function DronePage() {
   const stored = await getContent<unknown>("content_drone", null);

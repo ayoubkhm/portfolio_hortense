@@ -9,6 +9,7 @@ import TextAreaField from "@/components/admin/fields/TextAreaField";
 import ParagraphsField from "@/components/admin/fields/ParagraphsField";
 import BackgroundImageField from "@/components/admin/fields/BackgroundImageField";
 import HeroVideoUploadField from "./HeroVideoUploadField";
+import MediaUploadButton from "@/components/admin/MediaUploadButton";
 import { getLockedRenderer } from "@/lib/blocks/locked-renderers";
 import type {
   Block,
@@ -272,7 +273,19 @@ function PricingEditor({ data, onChange }: EditorProps<PricingBlock>) {
       </button>
       <div className="pt-4 mt-4 border-t border-[#E8E0D4] space-y-3">
         <p className="text-sm font-medium text-[#2C2C2C]">Plaquette PDF (optionnel)</p>
-        <TextField label="Chemin du PDF" value={data.brochurePath || ""} onChange={(v) => onChange({ ...data, brochurePath: v })} placeholder="/uploads/plaquette-mariage.pdf" />
+        <div className="flex items-center gap-3">
+          <MediaUploadButton
+            accept="pdf"
+            category="brochure"
+            onUploaded={(path) => onChange({ ...data, brochurePath: path })}
+            label={data.brochurePath ? "Remplacer le PDF" : "Uploader un PDF"}
+            variant="solid"
+            size="sm"
+          />
+          {data.brochurePath && (
+            <span className="text-xs text-[#2C2C2C]/60 truncate max-w-xs">{data.brochurePath.split("/").pop()}</span>
+          )}
+        </div>
         <TextField label="Texte du bouton" value={data.brochureLabel || ""} onChange={(v) => onChange({ ...data, brochureLabel: v })} placeholder="Télécharger la plaquette" />
       </div>
     </div>

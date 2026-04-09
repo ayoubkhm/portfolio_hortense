@@ -438,6 +438,7 @@ export const CONTENT_KEYS = [
   "content_apropos",
   "content_contact",
   "content_theme",
+  "content_seo",
 ] as const;
 
 export type ContentKey = (typeof CONTENT_KEYS)[number];

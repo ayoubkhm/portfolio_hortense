@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TrackedLink from "@/components/ui/TrackedLink";
 
 interface CTASectionProps {
   title: string;
@@ -26,12 +26,13 @@ export default function CTASection({
           </p>
         )}
 
-        <Link
+        <TrackedLink
           href={buttonHref}
           className="inline-block bg-gold text-white py-3 px-8 rounded-full font-medium text-lg transition-colors hover:bg-gold/90"
+          eventLabel={buttonText}
         >
           {buttonText}
-        </Link>
+        </TrackedLink>
         <p className="mt-3 text-sm text-sand/70">Sans engagement · Réponse sous 24h</p>
       </div>
     </section>

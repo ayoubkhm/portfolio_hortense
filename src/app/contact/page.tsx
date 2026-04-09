@@ -4,23 +4,13 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import ContactForm from "@/components/contact/ContactForm";
 import { getContent, CONTACT_DEFAULTS, ContactContent } from "@/lib/content";
+import { getPageMetadata } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Contact — Devis Gratuit Photo & Drone",
-  description:
-    "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
-  openGraph: {
-    title: "Contact — Devis Gratuit Photo & Drone",
-    description:
-      "Contactez Hortense de Ruidiaz pour votre projet photo ou drone à Bordeaux. Tél. 06 16 28 22 70. Réponse sous 24h.",
-    url: "https://hortensederuidiaz.fr/contact",
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("contact");
+}
 
 export default async function ContactPage() {
   const content = await getContent<ContactContent>("content_contact", CONTACT_DEFAULTS);

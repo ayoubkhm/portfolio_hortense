@@ -26,6 +26,11 @@ const DEFAULTS: Record<string, any> = {
   content_drone_gallery: DRONE_GALLERY_DEFAULTS,
   content_contact: CONTACT_DEFAULTS,
   content_theme: {},
+  content_seo: {
+    siteTitle: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
+    siteDescription: "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
+    ogImage: "/uploads/hortense-portrait.jpg",
+  },
 };
 
 // Block-based pages: keys for which we return a normalized block shape

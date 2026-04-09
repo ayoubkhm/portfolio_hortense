@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
 
     // Category format: "mariage" or "mariage/preparatifs" or "drone/immobilier"
     const parentCategory = category.split("/")[0];
-    const validParents = ["mariage", "drone", "autre"];
+    const validParents = ["mariage", "drone", "autre", "brochure", "seo"];
 
     if (!validParents.includes(parentCategory)) {
       return NextResponse.json(

@@ -72,6 +72,7 @@ rsync -avz --delete \
   --exclude='*.tsbuildinfo' \
   --exclude='.DS_Store' \
   --exclude='.claude/' \
+  --exclude='.thumb-cache/' \
   --exclude='reco_dardouin/' \
   ./ "${VPS_USER}@${VPS_HOST}:${VPS_PATH}/"
 

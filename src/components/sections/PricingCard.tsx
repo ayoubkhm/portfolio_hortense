@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TrackedLink from "@/components/ui/TrackedLink";
 
 interface PricingCardProps {
   title: string;
@@ -48,16 +48,17 @@ export default function PricingCard({
           </li>
         ))}
       </ul>
-      <Link
+      <TrackedLink
         href="/contact"
         className={`block text-center py-3 px-6 rounded-full font-medium transition-colors ${
           highlighted
             ? "bg-white text-gold hover:bg-cream"
             : "bg-charcoal text-white hover:bg-charcoal/90"
         }`}
+        eventLabel={`Demander un devis — ${title}`}
       >
         Demander un devis
-      </Link>
+      </TrackedLink>
       <p className="mt-2 text-xs text-warmgray text-center">Devis gratuit · Sans engagement</p>
     </div>
   );

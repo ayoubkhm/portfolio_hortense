@@ -13,6 +13,8 @@ import CTASection from "@/components/sections/CTASection";
 import MariageCategoryGallery from "@/app/mariage/MariageCategoryGallery";
 import DroneGallery from "@/app/drone/DroneGallery";
 import VideoHeroBlockView from "./VideoHeroBlockView";
+import TrackedDownloadLink from "@/components/ui/TrackedDownloadLink";
+import TrackedLink from "@/components/ui/TrackedLink";
 import { getLockedRenderer } from "@/lib/blocks/locked-renderers";
 import type {
   Block,
@@ -125,16 +127,15 @@ function PricingBlockView({ block }: { block: PricingBlock }) {
         </div>
         {block.data.brochurePath && (
           <div className="text-center mt-12">
-            <a
+            <TrackedDownloadLink
               href={block.data.brochurePath}
-              download
               className="inline-flex items-center gap-2 bg-gold text-white py-3 px-8 rounded-full font-medium text-lg transition-colors hover:bg-gold/90"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               {block.data.brochureLabel || "Télécharger la plaquette"}
-            </a>
+            </TrackedDownloadLink>
           </div>
         )}
       </div>
@@ -267,12 +268,13 @@ function CtaBlockView({ block }: { block: CtaBlock }) {
           {block.data.subtitle && (
             <p className="text-warmgray leading-relaxed mb-8">{block.data.subtitle}</p>
           )}
-          <Link
+          <TrackedLink
             href={block.data.buttonHref}
             className="inline-block bg-gold text-white px-8 py-3 rounded-full font-medium hover:bg-gold/90 transition-colors text-sm uppercase tracking-wide"
+            eventLabel={block.data.buttonText}
           >
             {block.data.buttonText}
-          </Link>
+          </TrackedLink>
         </div>
       </section>
     );

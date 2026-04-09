@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, useRef, type FormEvent, type ChangeEvent } from "react";
+import { trackEvent } from "@/lib/gtag";
 
 interface FormData {
   name: string;
@@ -31,6 +32,7 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const hasTrackedIntent = useRef(false);
 
   function validate(data: FormData): FormErrors {
     const newErrors: FormErrors = {};
@@ -50,6 +52,11 @@ export default function ContactForm() {
   ) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Track first interaction = "almost contacted"
+    if (!hasTrackedIntent.current && value.trim()) {
+      hasTrackedIntent.current = true;
+      trackEvent({ action: "form_start", category: "contact", label: "contact_form" });
+    }
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => { const next = { ...prev }; delete next[name as keyof FormErrors]; return next; });
     }
@@ -76,6 +83,7 @@ export default function ContactForm() {
       if (res.ok) {
         setSubmitSuccess(true);
         setFormData(initialFormData);
+        trackEvent({ action: "form_submit", category: "contact", label: formData.service });
       } else {
         const body = await res.json().catch(() => null);
         setSubmitError(body?.error ?? "Une erreur est survenue. Veuillez réessayer.");

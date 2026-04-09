@@ -10,6 +10,7 @@ const MIME_TO_EXT: Record<string, string> = {
   "image/avif": ".avif",
   "video/mp4": ".mp4",
   "video/webm": ".webm",
+  "application/pdf": ".pdf",
 };
 const ALLOWED_TYPES = Object.keys(MIME_TO_EXT);
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
@@ -35,6 +36,9 @@ function validateMagicBytes(buffer: Buffer, mimetype: string): boolean {
     case "video/webm":
       // WebM starts with EBML header: 0x1A 0x45 0xDF 0xA3
       return buffer[0] === 0x1a && buffer[1] === 0x45 && buffer[2] === 0xdf && buffer[3] === 0xa3;
+    case "application/pdf":
+      // %PDF
+      return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
     default:
       return false; // Reject unknown types
   }
@@ -42,7 +46,7 @@ function validateMagicBytes(buffer: Buffer, mimetype: string): boolean {
 
 export function validateFile(file: File): string | null {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return `Type non autorisé: ${file.type}. Formats acceptés: JPEG, PNG, WebP, AVIF, MP4, WebM`;
+    return `Type non autorisé: ${file.type}. Formats acceptés: JPEG, PNG, WebP, AVIF, MP4, WebM, PDF`;
   }
   if (file.size > MAX_SIZE) {
     return `Fichier trop volumineux (max ${MAX_SIZE / 1024 / 1024}MB)`;

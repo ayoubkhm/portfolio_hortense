@@ -16,17 +16,20 @@ import { useState, useRef, type ReactNode } from "react";
 const MIME_TYPES: Record<MediaKind, string[]> = {
   image: ["image/jpeg", "image/png", "image/webp", "image/avif"],
   video: ["video/mp4", "video/webm"],
+  pdf: ["application/pdf"],
 };
 const MAX_SIZES: Record<MediaKind, number> = {
   image: 10 * 1024 * 1024, // 10 MB
   video: 50 * 1024 * 1024, // 50 MB
+  pdf: 20 * 1024 * 1024,   // 20 MB
 };
 const FRIENDLY_FORMATS: Record<MediaKind, string> = {
   image: "JPEG, PNG, WebP, AVIF",
   video: "MP4, WebM",
+  pdf: "PDF",
 };
 
-type MediaKind = "image" | "video";
+type MediaKind = "image" | "video" | "pdf";
 
 interface MediaUploadButtonProps {
   accept: MediaKind;
@@ -93,6 +96,8 @@ export default function MediaUploadButton({
     ? "Upload en cours…"
     : accept === "image"
     ? "Uploader une image"
+    : accept === "pdf"
+    ? "Uploader un PDF"
     : "Uploader la vidéo";
 
   const labelContent =
@@ -106,15 +111,22 @@ export default function MediaUploadButton({
 
   const iconClasses = size === "sm" ? "w-3.5 h-3.5" : "w-4 h-4";
 
-  const icon = noIcon ? null : accept === "image" ? (
+  const uploadIcon = (
     <svg className={iconClasses} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
     </svg>
-  ) : (
+  );
+  const videoIcon = (
     <svg className={iconClasses} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
     </svg>
   );
+  const pdfIcon = (
+    <svg className={iconClasses} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+    </svg>
+  );
+  const icon = noIcon ? null : accept === "pdf" ? pdfIcon : accept === "video" ? videoIcon : uploadIcon;
 
   return (
     <div className="space-y-1">

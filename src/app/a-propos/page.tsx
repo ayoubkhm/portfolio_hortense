@@ -1,39 +1,22 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlockRenderer from "@/components/blocks/BlockRenderer";
 import { getContent, APROPOS_DEFAULTS } from "@/lib/content";
 import { buildJsonLd } from "@/lib/blocks/jsonld";
 import { asBlockPageContent, aproposContentToBlocks } from "@/lib/blocks/migrators";
+import { getPageMetadata, getOgImageUrl } from "@/lib/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "À propos — Hortense de Ruidiaz, Photographe & Drone Bordeaux",
-  description:
-    "Découvrez le parcours d'Hortense de Ruidiaz, photographe professionnelle et opératrice drone certifiée CATS à Bordeaux. Expérience, certifications et valeurs.",
-  openGraph: {
-    title: "À propos — Hortense de Ruidiaz, Photographe & Drone Bordeaux",
-    description:
-      "Découvrez le parcours d'Hortense de Ruidiaz, photographe professionnelle et opératrice drone certifiée CATS à Bordeaux.",
-    url: "https://hortensederuidiaz.fr/a-propos",
-    images: [
-      {
-        url: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Hortense de Ruidiaz — Photographe & Drone Bordeaux",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("a-propos");
+}
 
 export default async function AProposPage() {
   const stored = await getContent<unknown>("content_apropos", null);
   const blockContent =
     asBlockPageContent(stored, "apropos") ?? { blocks: aproposContentToBlocks(APROPOS_DEFAULTS) };
+  const ogImage = await getOgImageUrl();
 
   // Page-level JSON-LD nodes (not tied to any block)
   const pageNodes = [
@@ -51,7 +34,7 @@ export default async function AProposPage() {
       name: "Hortense de Ruidiaz",
       jobTitle: "Photographe professionnelle & Opératrice drone certifiée",
       url: "https://hortensederuidiaz.fr",
-      image: "https://hortensederuidiaz.fr/uploads/hortense-portrait.jpg",
+      image: ogImage,
       email: "contact@hortensederuidiaz.fr",
       telephone: "+33616282270",
       address: {
