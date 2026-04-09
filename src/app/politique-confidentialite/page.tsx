@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 
 export const metadata: Metadata = {
-  title: 'Politique de Confidentialit\u00e9 | Hortense de Ruidiaz',
+  title: 'Politique de Confidentialit\u00e9',
   description:
     'Politique de confidentialit\u00e9 et protection des donn\u00e9es personnelles (RGPD) du site hortensederuidiaz.fr \u2014 Photographe & Drone \u00e0 Bordeaux.',
   alternates: {
