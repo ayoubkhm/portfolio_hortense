@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import PublicShell from "@/components/layout/PublicShell";
-import { BASE_URL, getSeoData } from "@/lib/metadata";
+import { BASE_URL, getSeoData, resolveOgImage } from "@/lib/metadata";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -20,7 +20,7 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoData();
-  const ogImageUrl = seo.ogImage.startsWith("http") ? seo.ogImage : `${BASE_URL}${seo.ogImage}`;
+  const ogImageUrl = resolveOgImage(seo.ogImage);
 
   return {
     title: {

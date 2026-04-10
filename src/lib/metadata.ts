@@ -48,7 +48,7 @@ export const getSeoData = cache((): Promise<SeoData> => {
   return getContent("content_seo", SEO_DEFAULTS);
 });
 
-function resolveOgImage(ogImage: string): string {
+export function resolveOgImage(ogImage: string): string {
   return ogImage.startsWith("http") ? ogImage : `${BASE_URL}${ogImage}`;
 }
 
