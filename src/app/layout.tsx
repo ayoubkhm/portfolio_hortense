@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import PublicShell from "@/components/layout/PublicShell";
-import { getContent } from "@/lib/content";
+import { SEO_DEFAULTS, BASE_URL, getOgImageUrl } from "@/lib/metadata";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -18,27 +18,16 @@ const inter = Inter({
   display: "swap",
 });
 
-const SEO_DEFAULTS = {
-  siteTitle: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
-  siteDescription:
-    "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
-  ogImage: "/uploads/d7409ce5fcdb1328b9bf9f56513f81df.jpg",
-};
-
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getContent("content_seo", SEO_DEFAULTS);
-  const base = "https://hortensederuidiaz.fr";
-  const ogImageUrl = seo.ogImage.startsWith("http")
-    ? seo.ogImage
-    : `${base}${seo.ogImage}`;
+  const ogImageUrl = await getOgImageUrl();
 
   return {
     title: {
-      default: seo.siteTitle,
+      default: SEO_DEFAULTS.siteTitle,
       template: "%s — Hortense de Ruidiaz",
     },
-    description: seo.siteDescription,
-    metadataBase: new URL(base),
+    description: SEO_DEFAULTS.siteDescription,
+    metadataBase: new URL(BASE_URL),
     ...(process.env.GSC_VERIFICATION
       ? { verification: { google: process.env.GSC_VERIFICATION } }
       : {}),
@@ -46,9 +35,9 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "fr_FR",
       siteName: "Hortense de Ruidiaz",
-      title: seo.siteTitle,
-      description: seo.siteDescription,
-      url: base,
+      title: SEO_DEFAULTS.siteTitle,
+      description: SEO_DEFAULTS.siteDescription,
+      url: BASE_URL,
       images: [
         {
           url: ogImageUrl,
@@ -62,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
     },
     alternates: {
-      canonical: base,
+      canonical: BASE_URL,
     },
   };
 }

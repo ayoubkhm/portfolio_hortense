@@ -62,47 +62,25 @@ export default function AdminSettingsPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load current user role
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((data) => setCurrentRole(data.role || ""))
-      .catch(() => {});
-
-    // Load Google env vars (read-only)
-    fetch("/api/settings/google")
-      .then((r) => r.json())
-      .then((data) => {
-        setGoogle({
-          gaId: data.gaId?.display || "",
-          gscProperty: data.gscProperty?.display || "",
-          gadsId: data.gadsId?.display || "",
-          gbpUrl: data.gbpUrl?.display || "",
-        });
-      })
-      .catch(() => {});
-
-    // Load SEO
-    fetch("/api/content/content_seo")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data && data.siteTitle) setSeo(data);
-      })
-      .catch(() => {});
-
-    // Load colors
-    fetch("/api/content/content_theme")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data && data.cream) setColors({ ...DEFAULT_COLORS, ...data });
-      })
-      .catch(() => {});
-
-    // Load users
-    fetch("/api/admin/users")
-      .then((r) => r.json())
-      .then((data) => setUsers(data.admins || []))
-      .catch(() => {})
-      .finally(() => setIsLoadingUsers(false));
+    Promise.all([
+      fetch("/api/auth/me").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/settings/google").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/content/content_seo").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/content/content_theme").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/admin/users").then((r) => r.json()).catch(() => ({ admins: [] })),
+    ]).then(([me, google, seo, theme, users]) => {
+      setCurrentRole(me.role || "");
+      setGoogle({
+        gaId: google.gaId || "",
+        gscProperty: google.gscProperty || "",
+        gadsId: google.gadsId || "",
+        gbpUrl: google.gbpUrl || "",
+      });
+      if (seo && seo.siteTitle) setSeo(seo);
+      if (theme && theme.cream) setColors({ ...DEFAULT_COLORS, ...theme });
+      setUsers(users.admins || []);
+      setIsLoadingUsers(false);
+    });
   }, []);
 
   // --- Colors ---

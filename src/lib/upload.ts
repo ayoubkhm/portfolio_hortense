@@ -75,12 +75,10 @@ export async function saveFile(file: File): Promise<{ filename: string; filepath
 
   // Optimize images: resize to max 2400px wide, convert to WebP q85
   if (IMAGE_TYPES.has(file.type)) {
-    finalBuffer = Buffer.from(
-      await sharp(buffer)
-        .resize({ width: IMAGE_MAX_WIDTH, withoutEnlargement: true })
-        .webp({ quality: IMAGE_WEBP_QUALITY })
-        .toBuffer()
-    );
+    finalBuffer = await sharp(buffer)
+      .resize({ width: IMAGE_MAX_WIDTH, withoutEnlargement: true })
+      .webp({ quality: IMAGE_WEBP_QUALITY })
+      .toBuffer() as Buffer<ArrayBuffer>;
     finalExt = ".webp";
   }
 

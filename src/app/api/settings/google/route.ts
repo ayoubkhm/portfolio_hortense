@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Expose Google env vars (read-only) so the admin settings page can display them.
-// Values are partially masked for security.
 function mask(val: string | undefined): string {
   if (!val) return "";
   if (val.length <= 6) return val;
@@ -10,9 +8,9 @@ function mask(val: string | undefined): string {
 
 export async function GET() {
   return NextResponse.json({
-    gaId: { raw: process.env.GA_ID || "", display: mask(process.env.GA_ID) },
-    gscProperty: { raw: process.env.GSC_PROPERTY || process.env.GSC_VERIFICATION || "", display: process.env.GSC_PROPERTY || mask(process.env.GSC_VERIFICATION) },
-    gadsId: { raw: process.env.GADS_ID || "", display: mask(process.env.GADS_ID) },
-    gbpUrl: { raw: process.env.GBP_URL || "", display: process.env.GBP_URL || "" },
+    gaId: mask(process.env.GA_ID),
+    gscProperty: process.env.GSC_PROPERTY || mask(process.env.GSC_VERIFICATION),
+    gadsId: mask(process.env.GADS_ID),
+    gbpUrl: process.env.GBP_URL || "",
   });
 }

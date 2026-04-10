@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { getContent } from "@/lib/content";
 
-const BASE = "https://hortensederuidiaz.fr";
+export const BASE_URL = "https://hortensederuidiaz.fr";
 
 interface SeoData {
   siteTitle: string;
@@ -10,7 +11,7 @@ interface SeoData {
   pages?: Record<string, { title?: string; description?: string }>;
 }
 
-const SEO_DEFAULTS: SeoData = {
+export const SEO_DEFAULTS: SeoData = {
   siteTitle: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
   siteDescription:
     "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
@@ -19,7 +20,7 @@ const SEO_DEFAULTS: SeoData = {
 };
 
 // Hardcoded defaults per page (used when no DB value exists)
-const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
+export const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
   accueil: {
     title: "Photographe Mariage & Drone Bordeaux | Hortense de Ruidiaz",
     description: "Photographe mariage & opératrice drone certifiée CATS à Bordeaux. Reportages photo et vidéo, vues aériennes. Devis gratuit en 24h.",
@@ -42,27 +43,32 @@ const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
   },
 };
 
-async function getSeoData(): Promise<SeoData> {
+// Cached per request via React.cache — avoids duplicate DB reads within a single render
+const getSeoData = cache((): Promise<SeoData> => {
   return getContent("content_seo", SEO_DEFAULTS);
+});
+
+function resolveOgImage(ogImage: string): string {
+  return ogImage.startsWith("http") ? ogImage : `${BASE_URL}${ogImage}`;
 }
 
 /** Returns the current OG image URL (full absolute URL). */
 export async function getOgImageUrl(): Promise<string> {
   const seo = await getSeoData();
-  return seo.ogImage.startsWith("http") ? seo.ogImage : `${BASE}${seo.ogImage}`;
+  return resolveOgImage(seo.ogImage);
 }
 
 /** Returns full Metadata for a given page slug, reading from DB with hardcoded fallbacks. */
 export async function getPageMetadata(pageSlug: string): Promise<Metadata> {
   const seo = await getSeoData();
-  const ogImage = seo.ogImage.startsWith("http") ? seo.ogImage : `${BASE}${seo.ogImage}`;
+  const ogImage = resolveOgImage(seo.ogImage);
 
   const dbPage = seo.pages?.[pageSlug];
   const defaults = PAGE_DEFAULTS[pageSlug] || { title: seo.siteTitle, description: seo.siteDescription };
 
   const title = dbPage?.title || defaults.title;
   const description = dbPage?.description || defaults.description;
-  const url = pageSlug === "accueil" ? BASE : `${BASE}/${pageSlug}`;
+  const url = pageSlug === "accueil" ? BASE_URL : `${BASE_URL}/${pageSlug}`;
 
   return {
     title,
@@ -77,6 +83,3 @@ export async function getPageMetadata(pageSlug: string): Promise<Metadata> {
     alternates: { canonical: url },
   };
 }
-
-/** Returns the page defaults (for admin UI placeholders). */
-export { PAGE_DEFAULTS };

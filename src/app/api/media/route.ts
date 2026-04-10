@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { validateFile, saveFile } from "@/lib/upload";
 import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
+import { VALID_PARENT_CATEGORIES } from "@/lib/media-categories";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/request-utils";
 import { readdir, stat } from "fs/promises";
@@ -86,11 +87,9 @@ export async function POST(request: NextRequest) {
 
     // Category format: "mariage" or "mariage/preparatifs" or "drone/immobilier"
     const parentCategory = category.split("/")[0];
-    const validParents = ["mariage", "drone", "autre", "brochure", "seo"];
-
-    if (!validParents.includes(parentCategory)) {
+    if (!VALID_PARENT_CATEGORIES.includes(parentCategory as typeof VALID_PARENT_CATEGORIES[number])) {
       return NextResponse.json(
-        { error: `Catégorie parente invalide. Valeurs acceptées : ${validParents.join(", ")}` },
+        { error: `Catégorie parente invalide. Valeurs acceptées : ${VALID_PARENT_CATEGORIES.join(", ")}` },
         { status: 400 }
       );
     }

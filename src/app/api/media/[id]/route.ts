@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { deleteFile } from "@/lib/upload";
 import { requireAuth, requireRole } from "@/lib/api-auth";
 import { canEditContent } from "@/lib/roles";
+import { VALID_PARENT_CATEGORIES } from "@/lib/media-categories";
 import { logAudit } from "@/lib/audit";
 import { getClientIp } from "@/lib/request-utils";
 
@@ -86,8 +87,8 @@ export async function PATCH(
 
     if (category !== undefined) {
       const parentCategory = String(category).split("/")[0];
-      const validParents = ["mariage", "drone", "autre", "brochure", "seo"];
-      if (!validParents.includes(parentCategory)) {
+      // uses shared VALID_PARENT_CATEGORIES
+      if (!VALID_PARENT_CATEGORIES.includes(parentCategory as typeof VALID_PARENT_CATEGORIES[number])) {
         return NextResponse.json(
           { error: "Catégorie invalide. Doit commencer par mariage, drone ou autre." },
           { status: 400 }
