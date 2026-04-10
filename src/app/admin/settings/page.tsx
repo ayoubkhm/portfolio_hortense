@@ -79,8 +79,7 @@ export default function AdminSettingsPage() {
       if (seo && seo.siteTitle) setSeo(seo);
       if (theme && theme.cream) setColors({ ...DEFAULT_COLORS, ...theme });
       setUsers(users.admins || []);
-      setIsLoadingUsers(false);
-    });
+    }).finally(() => setIsLoadingUsers(false));
   }, []);
 
   // --- Colors ---

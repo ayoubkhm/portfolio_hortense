@@ -44,7 +44,7 @@ export const PAGE_DEFAULTS: Record<string, { title: string; description: string 
 };
 
 // Cached per request via React.cache — avoids duplicate DB reads within a single render
-const getSeoData = cache((): Promise<SeoData> => {
+export const getSeoData = cache((): Promise<SeoData> => {
   return getContent("content_seo", SEO_DEFAULTS);
 });
 

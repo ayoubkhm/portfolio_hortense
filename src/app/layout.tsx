@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import PublicShell from "@/components/layout/PublicShell";
-import { SEO_DEFAULTS, BASE_URL, getOgImageUrl } from "@/lib/metadata";
+import { BASE_URL, getSeoData } from "@/lib/metadata";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,14 +19,15 @@ const inter = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const ogImageUrl = await getOgImageUrl();
+  const seo = await getSeoData();
+  const ogImageUrl = seo.ogImage.startsWith("http") ? seo.ogImage : `${BASE_URL}${seo.ogImage}`;
 
   return {
     title: {
-      default: SEO_DEFAULTS.siteTitle,
+      default: seo.siteTitle,
       template: "%s — Hortense de Ruidiaz",
     },
-    description: SEO_DEFAULTS.siteDescription,
+    description: seo.siteDescription,
     metadataBase: new URL(BASE_URL),
     ...(process.env.GSC_VERIFICATION
       ? { verification: { google: process.env.GSC_VERIFICATION } }
@@ -35,8 +36,8 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "fr_FR",
       siteName: "Hortense de Ruidiaz",
-      title: SEO_DEFAULTS.siteTitle,
-      description: SEO_DEFAULTS.siteDescription,
+      title: seo.siteTitle,
+      description: seo.siteDescription,
       url: BASE_URL,
       images: [
         {

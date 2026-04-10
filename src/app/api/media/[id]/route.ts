@@ -87,7 +87,7 @@ export async function PATCH(
 
     if (category !== undefined) {
       const parentCategory = String(category).split("/")[0];
-      // uses shared VALID_PARENT_CATEGORIES
+
       if (!VALID_PARENT_CATEGORIES.includes(parentCategory as typeof VALID_PARENT_CATEGORIES[number])) {
         return NextResponse.json(
           { error: "Catégorie invalide. Doit commencer par mariage, drone ou autre." },
