@@ -83,6 +83,11 @@ function blockToJsonLd(block: Block): JsonLdNode[] {
           author: block.data.author
             ? { "@type": "Person", name: block.data.author }
             : undefined,
+          itemReviewed: {
+            "@type": "LocalBusiness",
+            "@id": "https://hortensederuidiaz.fr/#localbusiness",
+            name: "Hortense de Ruidiaz",
+          },
         },
       ];
     }
@@ -95,6 +100,11 @@ function blockToJsonLd(block: Block): JsonLdNode[] {
         reviewBody: item.quote,
         author: { "@type": "Person", name: item.author },
         ...(item.detail ? { description: item.detail } : {}),
+        itemReviewed: {
+          "@type": "LocalBusiness",
+          "@id": "https://hortensederuidiaz.fr/#localbusiness",
+          name: "Hortense de Ruidiaz",
+        },
       }));
     }
 
