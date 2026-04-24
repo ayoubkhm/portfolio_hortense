@@ -29,6 +29,7 @@ import type {
   QuoteBlock,
   LinkCardsBlock,
   TestimonialsBlock,
+  GoogleReviewsBlock,
   CrossLinkBlock,
   LockedBlock,
 } from "@/lib/blocks/types";
@@ -534,6 +535,41 @@ function TestimonialsEditor({ data, onChange }: EditorProps<TestimonialsBlock>) 
   );
 }
 
+// ─── Google Reviews (config seulement — les avis viennent de la DB) ────────
+function GoogleReviewsEditor({ data, onChange }: EditorProps<GoogleReviewsBlock>) {
+  return (
+    <div className="space-y-4">
+      <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E8E0D4] text-xs text-[#6B6560] leading-relaxed">
+        Les avis sont synchronisés automatiquement depuis votre fiche Google Business Profile (toutes les heures).
+        Pour gérer les avis individuels (masquer, sync immédiate), allez dans <strong>Admin → Avis Google</strong>.
+      </div>
+      <TextField label="Titre de la section" value={data.heading} onChange={(v) => onChange({ ...data, heading: v })} />
+      <TextField label="Sous-titre (optionnel)" value={data.subheading || ""} onChange={(v) => onChange({ ...data, subheading: v })} />
+      <TextField
+        label="URL de votre fiche Google (lien « Voir sur Google »)"
+        value={data.gbpUrl}
+        onChange={(v) => onChange({ ...data, gbpUrl: v })}
+        placeholder="https://maps.google.com/?cid=..."
+      />
+      <div>
+        <label className="block text-sm font-medium text-[#2C2C2C] mb-2">
+          Note minimale à afficher
+        </label>
+        <select
+          value={data.minRating ?? ""}
+          onChange={(e) => onChange({ ...data, minRating: e.target.value ? Number(e.target.value) : undefined })}
+          className="w-full px-3 py-2 rounded-lg border border-[#E8E0D4] bg-white text-[#2C2C2C]"
+        >
+          <option value="">Tous les avis</option>
+          <option value="3">3 étoiles et plus</option>
+          <option value="4">4 étoiles et plus</option>
+          <option value="5">5 étoiles uniquement</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
 // ─── Cross-link (bandeau renvoi vers une autre page) ────────────────────────
 function CrossLinkEditor({ data, onChange }: EditorProps<CrossLinkBlock>) {
   return (
@@ -624,6 +660,8 @@ export default function BlockEditor({
       return <LinkCardsEditor data={block.data} onChange={onChange as (d: LinkCardsBlock["data"]) => void} />;
     case "testimonials":
       return <TestimonialsEditor data={block.data} onChange={onChange as (d: TestimonialsBlock["data"]) => void} />;
+    case "google-reviews":
+      return <GoogleReviewsEditor data={block.data} onChange={onChange as (d: GoogleReviewsBlock["data"]) => void} />;
     case "cross-link":
       return <CrossLinkEditor data={block.data} onChange={onChange as (d: CrossLinkBlock["data"]) => void} />;
     case "locked":

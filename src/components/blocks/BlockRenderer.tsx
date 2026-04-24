@@ -15,6 +15,7 @@ import DroneGallery from "@/app/drone/DroneGallery";
 import VideoHeroBlockView from "./VideoHeroBlockView";
 import TrackedLink from "@/components/ui/TrackedLink";
 import { getLockedRenderer } from "@/lib/blocks/locked-renderers";
+import { getVisibleReviews, getAggregateStats } from "@/lib/google-reviews";
 import type {
   Block,
   HeroBlock,
@@ -31,6 +32,7 @@ import type {
   QuoteBlock,
   LinkCardsBlock,
   TestimonialsBlock,
+  GoogleReviewsBlock,
   CrossLinkBlock,
   LockedBlock,
 } from "@/lib/blocks/types";
@@ -409,6 +411,105 @@ function TestimonialsBlockView({ block }: { block: TestimonialsBlock }) {
   );
 }
 
+// ─── Google Reviews (auto-syncés depuis le Google Business Profile) ────────
+// Async server component — reads from Prisma at request time. The block data
+// only carries presentation (heading/subheading/minRating/gbpUrl); the actual
+// reviews live in the GoogleReview table and are filtered by `hidden=false`.
+// Per Google ToS, we display the Google logo + a link back to the GBP.
+async function GoogleReviewsBlockView({ block }: { block: GoogleReviewsBlock }) {
+  const reviews = await getVisibleReviews(block.data.minRating);
+  if (reviews.length === 0) return null;
+  const stats = await getAggregateStats(block.data.minRating);
+
+  return (
+    <section className="py-20 px-4 bg-sand">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="font-serif text-3xl md:text-4xl text-charcoal text-center mb-3">
+          {block.data.heading}
+        </h2>
+        {block.data.subheading && (
+          <p className="text-warmgray text-center mb-4 max-w-xl mx-auto">{block.data.subheading}</p>
+        )}
+
+        {/* Aggregate badge: "5.0 ★ — 4 avis Google" with link to GBP */}
+        {stats && (
+          <a
+            href={block.data.gbpUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-12 mx-auto flex w-fit items-center gap-3 rounded-full bg-cream px-5 py-2 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <span className="font-serif text-lg text-charcoal font-semibold">{stats.average.toFixed(1)}</span>
+            <span className="flex" aria-label={`${stats.average.toFixed(1)} sur 5`}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <svg
+                  key={n}
+                  className={`w-4 h-4 ${n <= Math.round(stats.average) ? "text-gold" : "text-sand"}`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.376 2.455a1 1 0 00-.363 1.118l1.287 3.967c.3.921-.755 1.688-1.539 1.118l-3.376-2.454a1 1 0 00-1.176 0l-3.376 2.454c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
+                </svg>
+              ))}
+            </span>
+            <span className="text-sm text-warmgray">{stats.count} avis sur</span>
+            {/* Google "G" logo (4-color) */}
+            <svg className="h-4 w-4" viewBox="0 0 48 48" aria-label="Google">
+              <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+              <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+              <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+              <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+            </svg>
+          </a>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {reviews.map((r) => (
+            <article key={r.id} className="bg-cream rounded-2xl p-8 shadow-sm h-full flex flex-col">
+              {/* Header: avatar + name + rating */}
+              <header className="flex items-center gap-4 mb-4">
+                {r.authorPhoto ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={r.authorPhoto} alt="" className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-sand flex items-center justify-center text-charcoal font-serif">
+                    {r.authorName.charAt(0)}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-serif text-charcoal font-semibold truncate">{r.authorName}</p>
+                  <span className="flex" aria-label={`${r.rating} sur 5`}>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <svg key={n} className={`w-3.5 h-3.5 ${n <= r.rating ? "text-gold" : "text-sand"}`} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.376 2.455a1 1 0 00-.363 1.118l1.287 3.967c.3.921-.755 1.688-1.539 1.118l-3.376-2.454a1 1 0 00-1.176 0l-3.376 2.454c-.784.57-1.838-.197-1.539-1.118l1.287-3.967a1 1 0 00-.363-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
+                      </svg>
+                    ))}
+                  </span>
+                </div>
+              </header>
+
+              <blockquote className="text-warmgray leading-relaxed flex-grow mb-4">
+                {r.text}
+              </blockquote>
+
+              <footer className="text-xs text-warmgray/70 border-t border-sand pt-3">
+                {new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "long" }).format(r.publishedAt)}
+              </footer>
+            </article>
+          ))}
+        </div>
+
+        <p className="text-center mt-8 text-sm text-warmgray">
+          <a href={block.data.gbpUrl} target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">
+            Voir tous les avis sur Google →
+          </a>
+        </p>
+      </div>
+    </section>
+  );
+}
+
 // ─── Locked (rendered by hardcoded code, not by data) ───────────────────────
 // ─── Cross-link (bandeau renvoi vers une autre page) ────────────────────────
 function CrossLinkBlockView({ block }: { block: CrossLinkBlock }) {
@@ -498,6 +599,8 @@ export default function BlockRenderer({ block }: { block: Block }) {
       return <LinkCardsBlockView block={block} />;
     case "testimonials":
       return <TestimonialsBlockView block={block} />;
+    case "google-reviews":
+      return <GoogleReviewsBlockView block={block} />;
     case "cross-link":
       return <CrossLinkBlockView block={block} />;
     case "locked":

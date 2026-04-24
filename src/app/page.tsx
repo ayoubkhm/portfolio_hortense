@@ -95,7 +95,7 @@ export default async function Home() {
     },
   ];
 
-  const jsonLd = buildJsonLd(blockContent.blocks, pageNodes);
+  const jsonLd = await buildJsonLd(blockContent.blocks, pageNodes);
 
   return (
     <main>

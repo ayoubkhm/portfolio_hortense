@@ -177,6 +177,17 @@ const TESTIMONIALS: BlockTypeMeta<"testimonials"> = {
   }),
 };
 
+const GOOGLE_REVIEWS: BlockTypeMeta<"google-reviews"> = {
+  type: "google-reviews",
+  label: "Avis Google (auto-syncés)",
+  description: "Avis tirés automatiquement de la fiche Google Business Profile, mis à jour toutes les heures. Génère du schema Review + AggregateRating pour le SEO.",
+  defaultData: () => ({
+    heading: "Avis clients",
+    subheading: "Vérifiés depuis ma fiche Google",
+    gbpUrl: "https://maps.google.com/?cid=6877207829907698706",
+  }),
+};
+
 const QUOTE: BlockTypeMeta<"quote"> = {
   type: "quote",
   label: "Citation / témoignage",
@@ -217,6 +228,7 @@ export const BLOCK_REGISTRY = [
   IMAGE_TEXT,
   LINK_CARDS,
   TESTIMONIALS,
+  GOOGLE_REVIEWS,
   QUOTE,
 ] as const;
 

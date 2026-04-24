@@ -8,10 +8,54 @@
 // just doesn't contribute anything.
 
 import type { Block } from "./types";
+import { getVisibleReviews, getAggregateStats } from "@/lib/google-reviews";
 
 // A JSON-LD entity (Schema.org node). Loose typing on purpose — JSON-LD is
 // fundamentally a string-keyed object graph.
 type JsonLdNode = Record<string, unknown>;
+
+/**
+ * Build JSON-LD fragments for a google-reviews block by reading from DB.
+ * Async because we hit Prisma. Kept separate from the sync blockToJsonLd()
+ * so the rest stays cheap.
+ */
+async function googleReviewsToJsonLd(minRating?: number): Promise<JsonLdNode[]> {
+  const reviews = await getVisibleReviews(minRating);
+  if (reviews.length === 0) return [];
+
+  const nodes: JsonLdNode[] = reviews.map((r) => ({
+    "@type": "Review",
+    reviewBody: r.text,
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: r.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    author: { "@type": "Person", name: r.authorName },
+    datePublished: r.publishedAt.toISOString(),
+    itemReviewed: {
+      "@type": "LocalBusiness",
+      "@id": "https://hortensederuidiaz.fr/#localbusiness",
+      name: "Hortense de Ruidiaz",
+    },
+  }));
+
+  const stats = await getAggregateStats(minRating);
+  if (stats) {
+    nodes.push({
+      "@type": "AggregateRating",
+      "@id": "https://hortensederuidiaz.fr/#aggregaterating",
+      itemReviewed: { "@id": "https://hortensederuidiaz.fr/#localbusiness" },
+      ratingValue: stats.average.toFixed(1),
+      reviewCount: stats.count,
+      bestRating: 5,
+      worstRating: 1,
+    });
+  }
+
+  return nodes;
+}
 
 /**
  * Build the @graph fragments contributed by a single block.
@@ -108,6 +152,11 @@ function blockToJsonLd(block: Block): JsonLdNode[] {
       }));
     }
 
+    // google-reviews is handled async at the page level via aggregateBlockJsonLd
+    // — return [] here since blockToJsonLd is sync.
+    case "google-reviews":
+      return [];
+
     // ─── Pas de schema dédié pour ces blocs ─────────────────────────────────
     case "hero":
     case "video-hero":
@@ -132,23 +181,32 @@ function blockToJsonLd(block: Block): JsonLdNode[] {
  * Aggregate JSON-LD from all blocks of a page.
  * Returns the @graph array (without the wrapping @context).
  *
+ * Async because google-reviews blocks need to read from DB. All other block
+ * types resolve synchronously inside blockToJsonLd().
+ *
  * Pass `pageNodes` to include page-level nodes (WebPage, BreadcrumbList, etc.)
  * that aren't tied to any block.
  */
-export function aggregateBlockJsonLd(blocks: Block[], pageNodes: JsonLdNode[] = []): JsonLdNode[] {
-  const blockNodes = blocks.flatMap(blockToJsonLd);
-  return [...pageNodes, ...blockNodes];
+export async function aggregateBlockJsonLd(blocks: Block[], pageNodes: JsonLdNode[] = []): Promise<JsonLdNode[]> {
+  const syncNodes = blocks.flatMap(blockToJsonLd);
+
+  const googleReviewBlocks = blocks.filter((b): b is Extract<Block, { type: "google-reviews" }> => b.type === "google-reviews");
+  const asyncNodes = (
+    await Promise.all(googleReviewBlocks.map((b) => googleReviewsToJsonLd(b.data.minRating)))
+  ).flat();
+
+  return [...pageNodes, ...syncNodes, ...asyncNodes];
 }
 
 /**
  * Build the full JSON-LD object ready to inject in <script>.
  */
-export function buildJsonLd(blocks: Block[], pageNodes: JsonLdNode[] = []): {
+export async function buildJsonLd(blocks: Block[], pageNodes: JsonLdNode[] = []): Promise<{
   "@context": string;
   "@graph": JsonLdNode[];
-} {
+}> {
   return {
     "@context": "https://schema.org",
-    "@graph": aggregateBlockJsonLd(blocks, pageNodes),
+    "@graph": await aggregateBlockJsonLd(blocks, pageNodes),
   };
 }

@@ -42,9 +42,12 @@ export async function POST(request: NextRequest) {
 
     // Always return success to avoid email enumeration
     if (token) {
-      const trustedBase = process.env.SITE_URL || request.headers.get("origin") || "";
+      // Fail closed: never fall back to the request Origin/Host, which an
+      // attacker can control via Host header injection and use to steal the
+      // reset token by pointing the email at their own domain.
+      const trustedBase = process.env.SITE_URL;
       if (!trustedBase) {
-        console.error("SITE_URL not set and no Origin header");
+        console.error("[SECURITY] SITE_URL not set — password reset email not sent");
       } else {
         const resetUrl = `${trustedBase}/admin/reset-password?token=${token}`;
         await sendPasswordResetEmail(email, resetUrl);

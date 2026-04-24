@@ -79,3 +79,20 @@ model AuditLog {
   ipAddress  String   @default("")
   createdAt  DateTime @default(now())
 }
+
+model GoogleReview {
+  id          String   @id @default(cuid())
+  // sha256(authorName + ":" + publishedAt.toISOString()) — stable dedup key
+  externalId  String   @unique
+  authorName  String
+  authorPhoto String   @default("")
+  authorUrl   String   @default("")
+  rating      Int
+  text        String
+  language    String   @default("fr")
+  publishedAt DateTime
+  hidden      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([hidden, publishedAt])
+}

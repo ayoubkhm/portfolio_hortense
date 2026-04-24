@@ -351,6 +351,8 @@ function getBlockSummary(block: Block): string {
       return `${block.data.heading} — ${block.data.cards.length} card(s)`;
     case "testimonials":
       return `${block.data.heading} — ${block.data.items.length} témoignage(s)`;
+    case "google-reviews":
+      return `${block.data.heading} — avis Google auto-syncés`;
     case "cross-link":
       return `${block.data.heading} → ${block.data.href}`;
     case "locked": {

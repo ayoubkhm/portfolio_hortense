@@ -164,6 +164,23 @@ export type TestimonialsBlock = BlockBase<
   }
 >;
 
+// ─── Avis Google (auto-syncés depuis le Google Business Profile) ────────────
+// Les reviews ne vivent PAS dans block.data — elles sont en DB (table
+// GoogleReview) et fetched au render. Le block stocke juste la mise en page.
+// Ça garantit que le tri/dédup/admin-hide reste centralisé en DB et qu'on
+// n'a pas à dupliquer les avis dans la value JSON de la page.
+export type GoogleReviewsBlock = BlockBase<
+  "google-reviews",
+  {
+    heading: string;
+    subheading?: string;
+    /** Si défini : n'affiche que les avis ≥ minRating (1-5). Vide = tout afficher. */
+    minRating?: number;
+    /** Lien vers la fiche GBP — affiché à côté du logo Google (obligation Google ToS). */
+    gbpUrl: string;
+  }
+>;
+
 // ─── Cards avec liens (style « Expertise » de la page À propos) ─────────────
 export type LinkCardsBlock = BlockBase<
   "link-cards",
@@ -220,6 +237,7 @@ export type Block =
   | QuoteBlock
   | LinkCardsBlock
   | TestimonialsBlock
+  | GoogleReviewsBlock
   | CrossLinkBlock
   | LockedBlock;
 

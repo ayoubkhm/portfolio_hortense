@@ -50,7 +50,7 @@ export default async function MariagePage() {
     },
   ];
 
-  const jsonLd = buildJsonLd(blockContent.blocks, pageNodes);
+  const jsonLd = await buildJsonLd(blockContent.blocks, pageNodes);
 
   return (
     <main>

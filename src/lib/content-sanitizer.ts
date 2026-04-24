@@ -21,16 +21,15 @@ export function sanitizeContent(obj: unknown): unknown {
 }
 
 function sanitizeString(str: string): string {
-  // Strip HTML tags
-  let clean = str.replace(/<[^>]*>/g, "");
-  // Prevent javascript: URLs if the string looks like a URL
-  if (clean.match(/^(https?:\/\/|\/)/)) {
-    // It's a URL — validate protocol
-    if (clean.startsWith("javascript:") || clean.startsWith("data:")) {
-      clean = "";
-    }
+  const clean = str.replace(/<[^>]*>/g, "").trim();
+  // Block dangerous URI schemes regardless of where they appear — not just when
+  // the string already looks like an http(s) URL. Admin-editable URL fields
+  // (iframe src, anchor href) must never carry javascript:/data:/vbscript:.
+  const lower = clean.toLowerCase();
+  if (lower.startsWith("javascript:") || lower.startsWith("data:") || lower.startsWith("vbscript:")) {
+    return "";
   }
-  return clean.trim();
+  return clean;
 }
 
 /**

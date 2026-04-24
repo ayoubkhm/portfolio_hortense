@@ -61,7 +61,7 @@ export default async function DronePage() {
     },
   ];
 
-  const jsonLd = buildJsonLd(blockContent.blocks, pageNodes);
+  const jsonLd = await buildJsonLd(blockContent.blocks, pageNodes);
 
   return (
     <main>
