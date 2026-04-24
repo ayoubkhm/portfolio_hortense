@@ -68,7 +68,7 @@ export default function LoginForm() {
     return (
       <form onSubmit={handleForgotPassword} className="w-full max-w-sm space-y-6">
         <p className="text-sm text-[#E8E0D4]/70">
-          Entrez votre email, vous recevrez un lien pour réinitialiser votre mot de passe.
+          Entrez votre email, vous recevrez un lien pour réinitialiser votre mot de passe. Si vous ne le recevez pas, contactez Hortense pour un reset manuel.
         </p>
         <div>
           <label htmlFor="forgot-email" className="block text-sm font-medium text-[#E8E0D4] mb-2">

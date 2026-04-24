@@ -50,13 +50,19 @@ export async function POST(request: NextRequest) {
         console.error("[SECURITY] SITE_URL not set — password reset email not sent");
       } else {
         const resetUrl = `${trustedBase}/admin/reset-password?token=${token}`;
-        await sendPasswordResetEmail(email, resetUrl);
+        const sent = await sendPasswordResetEmail(email, resetUrl);
+        if (!sent) {
+          // Resend is in sandbox: only the account owner (Hortense) can receive
+          // emails. Other admins can't self-reset; they must ask the owner to
+          // reset their password from /admin/users. Logged for visibility.
+          console.warn(`[auth] Password reset email NOT delivered to ${email} (Resend sandbox or other failure — see prior log).`);
+        }
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.",
+      message: "Si un compte admin existe avec cet email, un lien de réinitialisation est envoyé. Si vous ne le recevez pas, contactez la propriétaire du site pour un reset manuel.",
     });
   } catch (error) {
     console.error("Forgot password error:", error);

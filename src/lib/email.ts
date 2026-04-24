@@ -35,7 +35,7 @@ export async function sendContactNotification(
   });
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: `Hortense de Ruidiaz <${FROM_EMAIL}>`,
       to: notificationEmail,
       subject: `Nouvelle demande — ${data.service} — ${data.name}`,
@@ -102,9 +102,16 @@ export async function sendContactNotification(
         </div>
       `,
     });
+    // The Resend SDK returns {data, error} and does NOT throw on 4xx/5xx
+    // responses. The previous code ignored `error` and always returned true,
+    // hiding failures like "sandbox mode — recipient not your own email".
+    if (result.error) {
+      console.error("[email] Contact notification failed:", result.error);
+      return false;
+    }
     return true;
   } catch (error) {
-    console.error("Contact notification email error:", error);
+    console.error("[email] Contact notification threw:", error);
     return false;
   }
 }
@@ -121,7 +128,7 @@ export async function sendPasswordResetEmail(
   const safeResetUrl = escapeHtml(resetUrl);
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: `Hortense de Ruidiaz <${FROM_EMAIL}>`,
       to,
       subject: "Réinitialisation de votre mot de passe",
@@ -149,9 +156,13 @@ export async function sendPasswordResetEmail(
         </div>
       `,
     });
+    if (result.error) {
+      console.error("[email] Password reset failed:", result.error);
+      return false;
+    }
     return true;
   } catch (error) {
-    console.error("Email send error:", error);
+    console.error("[email] Password reset threw:", error);
     return false;
   }
 }
