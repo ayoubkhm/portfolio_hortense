@@ -34,7 +34,7 @@ export default function MentionsLegalesPage() {
             Mentions Légales
           </h1>
           <p className="mt-4 font-sans text-warmgray">
-            Dernière mise à jour : mars 2026
+            Dernière mise à jour : mai 2026
           </p>
         </div>
       </section>
@@ -56,7 +56,7 @@ export default function MentionsLegalesPage() {
               <ul className="ml-5 mt-3 list-disc space-y-1 text-warmgray">
                 <li><strong className="text-charcoal">Nom :</strong> Hortense de Ruidiaz</li>
                 <li><strong className="text-charcoal">Statut :</strong> Micro-entreprise / Entrepreneur individuel</li>
-                <li><strong className="text-charcoal">SIRET :</strong> [en cours d&apos;immatriculation]</li>
+                <li><strong className="text-charcoal">SIRET :</strong> 104 029 111 00010</li>
                 <li><strong className="text-charcoal">Adresse :</strong> Bordeaux, France</li>
                 <li><strong className="text-charcoal">E-mail :</strong>{' '}
                   <a href="mailto:contact@hortensederuidiaz.fr" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
@@ -75,11 +75,12 @@ export default function MentionsLegalesPage() {
             <div className="mt-4 space-y-1">
               <p>Le site est hébergé par&nbsp;:</p>
               <ul className="ml-5 mt-3 list-disc space-y-1 text-warmgray">
-                <li><strong className="text-charcoal">Hébergeur :</strong> Vercel Inc.</li>
-                <li><strong className="text-charcoal">Adresse :</strong> 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis</li>
+                <li><strong className="text-charcoal">Hébergeur :</strong> IONOS SARL</li>
+                <li><strong className="text-charcoal">Adresse :</strong> 7 place de la Gare, BP 70109, 57201 Sarreguemines Cedex, France</li>
+                <li><strong className="text-charcoal">Téléphone :</strong> 0970 808 911</li>
                 <li><strong className="text-charcoal">Site web :</strong>{' '}
-                  <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
-                    vercel.com
+                  <a href="https://www.ionos.fr" target="_blank" rel="noopener noreferrer" className="text-sage underline underline-offset-2 transition-colors hover:text-gold">
+                    ionos.fr
                   </a>
                 </li>
               </ul>
