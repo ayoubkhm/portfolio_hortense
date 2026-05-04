@@ -34,6 +34,9 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
           <p className="text-sm text-sand/70">
             &copy; {new Date().getFullYear()} Hortense de Ruidiaz
+            <span className="block text-xs text-sand/50 md:inline md:ml-2">
+              · SIRET 104 029 111 00010
+            </span>
           </p>
 
           <nav>
