@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import MariageStudioModal from "./MariageStudioModal";
 
 interface CategoryImage {
@@ -16,7 +16,6 @@ interface Category {
 export default function MariageCategoryGallery() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     fetch("/api/content/content_mariage_gallery")
@@ -29,37 +28,6 @@ export default function MariageCategoryGallery() {
 
   const activeCategory = categories.find((c) => c.title === openCategory);
   const images = activeCategory?.images ?? [];
-
-  const closePopover = useCallback(() => {
-    setOpenCategory(null);
-    setSelectedIndex(0);
-  }, []);
-
-  const nextImage = useCallback(() => {
-    setSelectedIndex((prev) => (prev + 1) % images.length);
-  }, [images.length]);
-
-  const prevImage = useCallback(() => {
-    setSelectedIndex((prev) => (prev - 1 + images.length) % images.length);
-  }, [images.length]);
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (!openCategory) return;
-      if (e.key === "Escape") closePopover();
-      if (e.key === "ArrowRight") nextImage();
-      if (e.key === "ArrowLeft") prevImage();
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [openCategory, closePopover, nextImage, prevImage]);
-
-  useEffect(() => {
-    document.body.style.overflow = openCategory ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [openCategory]);
 
   if (categories.length === 0) return null;
 
@@ -77,10 +45,7 @@ export default function MariageCategoryGallery() {
             return (
               <button
                 key={cat.title}
-                onClick={() => {
-                  setOpenCategory(cat.title);
-                  setSelectedIndex(0);
-                }}
+                onClick={() => setOpenCategory(cat.title)}
                 className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer transition-shadow duration-300 hover:shadow-xl"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
@@ -108,9 +73,7 @@ export default function MariageCategoryGallery() {
         <MariageStudioModal
           category={activeCategory}
           images={images}
-          selectedIndex={selectedIndex}
-          onClose={closePopover}
-          onSelectIndex={setSelectedIndex}
+          onClose={() => setOpenCategory(null)}
         />
       )}
     </>
