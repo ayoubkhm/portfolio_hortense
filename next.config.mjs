@@ -26,7 +26,7 @@ const nextConfig = {
     // locally so client components hydrate, but keep the strict policy in prod.
     const isDev = process.env.NODE_ENV === "development";
     const scriptSrc = `'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`;
-    const csp = `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube.com https://player.vimeo.com; media-src 'self'; object-src 'none'; base-uri 'self'`;
+    const csp = `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube.com https://player.vimeo.com; media-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' https://ayoubkhamassi.com`;
 
     return [
       {
@@ -45,7 +45,6 @@ const nextConfig = {
         source: "/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
